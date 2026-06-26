@@ -1,0 +1,24 @@
+class Member < ApplicationRecord
+  belongs_to :invited_by_member, class_name: "Member", optional: true
+  has_many :sent_wallet_invitations,
+    class_name: "WalletInvitation",
+    foreign_key: :invited_by_member_id,
+    dependent: :restrict_with_exception
+
+  before_validation :normalize_wallet_address
+
+  validates :wallet_address, presence: true, uniqueness: true
+  validate :wallet_address_must_be_ethereum_address
+
+  private
+
+  def normalize_wallet_address
+    self.wallet_address = EthereumWallet.normalize(wallet_address)
+  end
+
+  def wallet_address_must_be_ethereum_address
+    return if wallet_address.blank? || EthereumWallet.valid_address?(wallet_address)
+
+    errors.add(:wallet_address, "must be an Ethereum address")
+  end
+end
