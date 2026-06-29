@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   end
 
   resources :wallet_invitations, only: :create
+  resources :communities
+  resources :threads, controller: :threads
+  resources :posts
+  resources :comments
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -4,6 +4,18 @@ class Member < ApplicationRecord
     class_name: "WalletInvitation",
     foreign_key: :invited_by_member_id,
     dependent: :restrict_with_exception
+  has_many :communities,
+    foreign_key: :created_by_member_id,
+    dependent: :restrict_with_exception
+  has_many :community_threads,
+    foreign_key: :author_member_id,
+    dependent: :restrict_with_exception
+  has_many :posts,
+    foreign_key: :author_member_id,
+    dependent: :restrict_with_exception
+  has_many :comments,
+    foreign_key: :author_member_id,
+    dependent: :restrict_with_exception
 
   before_validation :normalize_wallet_address
 
