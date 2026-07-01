@@ -1,0 +1,37 @@
+<% content_for :title, "Invitations" %>
+
+<main class="container">
+  <section class="invitation-list" aria-labelledby="sent-invitations-title">
+    <div class="section-heading">
+      <div>
+        <p class="login-kicker">Invitations</p>
+        <h1 id="sent-invitations-title">Sent Invitations</h1>
+      </div>
+
+      <%= link_to "Invite wallet", new_wallet_invitation_path, class: "button" %>
+    </div>
+
+    <% if @wallet_invitations.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Wallet</th>
+            <th>Status</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @wallet_invitations.each do |invitation| %>
+            <tr>
+              <td><%= invitation.wallet_address %></td>
+              <td><%= invitation.accepted_at? ? "Accepted" : "Pending" %></td>
+              <td><%= time_tag invitation.created_at, invitation.created_at.to_fs(:short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No invitations sent yet.</p>
+    <% end %>
+  </section>
+</main>

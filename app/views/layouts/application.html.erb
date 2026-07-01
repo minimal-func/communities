@@ -24,6 +24,18 @@
   </head>
 
   <body>
+    <% if notice.present? || alert.present? %>
+      <div class="flash-stack" role="status" aria-live="polite">
+        <% if notice.present? %>
+          <p class="notice"><%= notice %></p>
+        <% end %>
+
+        <% if alert.present? %>
+          <p class="alert"><%= alert %></p>
+        <% end %>
+      </div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

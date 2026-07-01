@@ -1,4 +1,7 @@
 class SessionsController < ApplicationController
+  def new
+  end
+
   def nonce
     wallet_address = EthereumWallet.normalize(session_params[:wallet_address])
 

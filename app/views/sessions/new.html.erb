@@ -1,0 +1,47 @@
+<% content_for :title, "Login" %>
+
+<main class="login-shell">
+  <section class="login-panel" aria-labelledby="login-title">
+    <div class="login-copy">
+      <p class="login-kicker">Communities</p>
+      <h1 id="login-title">Member Login</h1>
+      <p class="login-summary">Connect an invited Ethereum wallet to enter the community workspace.</p>
+    </div>
+
+    <% if current_member %>
+      <div class="wallet-card">
+        <div>
+          <p class="wallet-label">Signed in wallet</p>
+          <p class="wallet-address"><%= current_member.wallet_address %></p>
+        </div>
+
+        <%= link_to "Invite wallet", new_wallet_invitation_path, class: "button" %>
+        <%= button_to "Sign out", session_path, method: :delete, class: "button button-secondary" %>
+      </div>
+    <% else %>
+      <form class="wallet-card" data-controller="wallet-login" data-action="wallet-login#submit">
+        <div>
+          <label for="wallet_address">Wallet address</label>
+          <input
+            id="wallet_address"
+            name="wallet_address"
+            autocomplete="off"
+            inputmode="text"
+            placeholder="0x..."
+            data-wallet-login-target="walletAddress"
+          >
+        </div>
+
+        <button type="button" data-action="wallet-login#connectWallet" data-wallet-login-target="connectButton">
+          Connect wallet
+        </button>
+
+        <button type="submit" data-wallet-login-target="submitButton">
+          Sign in
+        </button>
+
+        <p class="login-status" data-wallet-login-target="status" role="status" aria-live="polite"></p>
+      </form>
+    <% end %>
+  </section>
+</main>
