@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_26_123015) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_07_124753) do
+  create_table "admin_users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
   create_table "comments", force: :cascade do |t|
     t.integer "author_member_id", null: false
     t.text "body", null: false
@@ -44,6 +56,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_123015) do
   end
 
   create_table "members", force: :cascade do |t|
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.integer "invited_by_member_id"
     t.datetime "last_signed_in_at"

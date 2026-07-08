@@ -19,7 +19,32 @@
         <%= button_to "Sign out", session_path, method: :delete, class: "button button-secondary" %>
       </div>
     <% else %>
-      <form class="wallet-card" data-controller="wallet-login" data-action="wallet-login#submit">
+      <form class="wallet-card" data-controller="wallet-login" data-action="submit->wallet-login#submit">
+        <fieldset class="provider-selector">
+          <legend>Choose provider</legend>
+          <button type="button"
+                  class="provider-button provider-active"
+                  data-provider-key="browser"
+                  data-wallet-login-target="providerButton"
+                  data-action="click->wallet-login#selectProvider">
+            Browser Wallet
+          </button>
+          <button type="button"
+                  class="provider-button provider-inactive"
+                  data-provider-key="walletconnect"
+                  data-wallet-login-target="providerButton"
+                  data-action="click->wallet-login#selectProvider">
+            WalletConnect
+          </button>
+          <button type="button"
+                  class="provider-button provider-inactive"
+                  data-provider-key="ledger"
+                  data-wallet-login-target="providerButton"
+                  data-action="click->wallet-login#selectProvider">
+            Ledger
+          </button>
+        </fieldset>
+
         <div>
           <label for="wallet_address">Wallet address</label>
           <input

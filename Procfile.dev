@@ -1,0 +1,2 @@
+web: bin/rails server -p 3000
+css: sass --load-path=app/assets/stylesheets --load-path=$(bundle show activeadmin)/app/assets/stylesheets --watch app/assets/stylesheets/application.scss:app/assets/builds/application.css app/assets/stylesheets/active_admin.scss:app/assets/builds/active_admin.css

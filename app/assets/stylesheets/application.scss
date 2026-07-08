@@ -1,14 +1,3 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
-
 :root {
   color-scheme: dark;
   --cyber-bg: #070812;
@@ -325,6 +314,57 @@ pre {
   min-width: 0;
   border-color: rgba(255, 43, 214, 0.34);
   background: linear-gradient(145deg, var(--cyber-panel-strong), rgba(6, 20, 29, 0.88));
+}
+
+.provider-selector {
+  display: flex;
+  gap: 0.5rem;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.provider-selector legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.provider-button {
+  flex: 1;
+  min-height: 2.25rem;
+  border: 1px solid var(--cyber-border);
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+  font: 700 0.75rem/1 var(--cyber-font);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.provider-inactive {
+  color: var(--cyber-muted);
+  background: rgba(2, 5, 16, 0.6);
+  box-shadow: none;
+  border-color: rgba(0, 246, 255, 0.18);
+}
+
+.provider-inactive:hover {
+  color: var(--cyber-text);
+  border-color: var(--cyber-border);
+  background: rgba(0, 246, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.provider-active {
+  color: #031016;
+  background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-green));
+  border-color: var(--cyber-cyan);
+  box-shadow: 0 0 12px rgba(0, 246, 255, 0.4), inset -3px 0 0 rgba(250, 255, 0, 0.4);
 }
 
 .wallet-address {

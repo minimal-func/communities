@@ -22,6 +22,12 @@ class Member < ApplicationRecord
   validates :wallet_address, presence: true, uniqueness: true
   validate :wallet_address_must_be_ethereum_address
 
+  scope :admins, -> { where(admin: true) }
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["admin", "created_at", "id", "invited_by_member_id", "last_signed_in_at", "updated_at", "wallet_address"]
+  end
+
   private
 
   def normalize_wallet_address

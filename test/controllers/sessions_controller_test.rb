@@ -33,7 +33,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     sign_in_with_wallet(inviter, inviter_key)
 
-    post wallet_invitations_path, params: { wallet_address: invitee_address }
+    post wallet_invitations_path, params: { wallet_address: invitee_address }, as: :json
     assert_response :created
 
     post nonce_session_path, params: { wallet_address: invitee_address }

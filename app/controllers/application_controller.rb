@@ -18,4 +18,14 @@ class ApplicationController < ActionController::Base
 
     render json: { error: "Authentication required" }, status: :unauthorized
   end
+
+  def authenticate_admin_member!
+    return if current_member&.admin?
+
+    if current_member
+      render plain: "Forbidden", status: :forbidden
+    else
+      redirect_to login_path, alert: "Sign in as an admin to continue."
+    end
+  end
 end

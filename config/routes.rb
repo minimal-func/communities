@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
   get "login" => "sessions#new", as: :login
 
   resource :session, only: %i[create destroy] do
@@ -6,6 +7,8 @@ Rails.application.routes.draw do
   end
 
   resources :wallet_invitations, only: %i[index new create]
+  ActiveAdmin.routes(self)
+
   resources :communities
   resources :threads, controller: :threads
   resources :posts
