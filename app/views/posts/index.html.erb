@@ -1,0 +1,35 @@
+<% content_for :title, "Posts in #{@thread.title}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @thread.community.name, @thread.community %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @thread.title, thread_path(@thread) %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Posts</span>
+  </div>
+
+  <section aria-labelledby="posts-title">
+    <div class="section-heading">
+      <h1 id="posts-title">Posts</h1>
+      <%= link_to "New Post", new_thread_post_path(@thread), class: "button" %>
+    </div>
+
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <article class="panel post-card mb-1">
+          <p class="meta-line">
+            <%= post.author_member.wallet_address %>
+            &middot; <%= time_tag post.created_at, post.created_at.to_fs(:short) %>
+          </p>
+          <p class="body-text"><%= post.body %></p>
+          <%= link_to "View", post_path(post), class: "button button-secondary mt-1" %>
+        </article>
+      <% end %>
+    <% else %>
+      <p class="empty-state">No posts yet.</p>
+    <% end %>
+  </section>
+</main>

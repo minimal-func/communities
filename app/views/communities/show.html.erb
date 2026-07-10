@@ -1,0 +1,57 @@
+<% content_for :title, @community.name %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <span><%= @community.name %></span>
+  </div>
+
+  <section aria-labelledby="community-title">
+    <div class="section-heading">
+      <div>
+        <h1 id="community-title"><%= @community.name %></h1>
+        <% if @community.description.present? %>
+          <p class="text-muted mt-1"><%= @community.description %></p>
+        <% end %>
+      </div>
+      <div class="actions-row">
+        <%= link_to "New Thread", new_community_thread_path(@community), class: "button" %>
+        <%= link_to "Edit", edit_community_path(@community), class: "button button-secondary" %>
+        <%= button_to "Delete", @community, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this community?" } %>
+      </div>
+    </div>
+
+    <p class="meta-line">
+      Created by <%= @community.created_by_member.wallet_address %>
+      &middot; <%= time_tag @community.created_at, @community.created_at.to_fs(:short) %>
+    </p>
+  </section>
+
+  <section class="mt-2" aria-labelledby="threads-title">
+    <h2 id="threads-title">Threads</h2>
+
+    <% if @threads.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @threads.each do |thread| %>
+            <tr>
+              <td><%= link_to thread.title, thread_path(thread) %></td>
+              <td><%= thread.author_member.wallet_address %></td>
+              <td><%= time_tag thread.created_at, thread.created_at.to_fs(:short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No threads yet.</p>
+    <% end %>
+  </section>
+</main>

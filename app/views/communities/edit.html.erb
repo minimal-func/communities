@@ -1,0 +1,17 @@
+<% content_for :title, "Edit #{@community.name}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @community.name, @community %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Edit</span>
+  </div>
+
+  <section aria-labelledby="edit-community-title">
+    <h1 id="edit-community-title">Edit <%= @community.name %></h1>
+
+    <%= render "form", community: @community %>
+  </section>
+</main>

@@ -1,0 +1,32 @@
+<% content_for :title, "Post by #{@post.author_member.wallet_address}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @post.community_thread.community.name, @post.community_thread.community %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @post.community_thread.title, thread_path(@post.community_thread) %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Post</span>
+  </div>
+
+  <section aria-labelledby="post-title">
+    <div class="thread-header">
+      <h1 id="post-title">Post</h1>
+      <p class="meta-line">
+        By <%= @post.author_member.wallet_address %>
+        &middot; <%= time_tag @post.created_at, @post.created_at.to_fs(:short) %>
+      </p>
+    </div>
+
+    <article class="panel">
+      <p class="body-text"><%= @post.body %></p>
+    </article>
+
+    <div class="actions-row mt-2">
+      <%= link_to "Edit", edit_post_path(@post), class: "button button-secondary" %>
+      <%= button_to "Delete", @post, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this post?" } %>
+    </div>
+  </section>
+</main>

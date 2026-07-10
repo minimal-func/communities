@@ -16,7 +16,10 @@ class ApplicationController < ActionController::Base
   def require_member
     return if current_member
 
-    render json: { error: "Authentication required" }, status: :unauthorized
+    respond_to do |format|
+      format.html { redirect_to login_path, alert: "Sign in to continue." }
+      format.json { render json: { error: "Authentication required" }, status: :unauthorized }
+    end
   end
 
   def authenticate_admin_member!

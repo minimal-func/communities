@@ -1,0 +1,41 @@
+<% content_for :title, "Threads in #{@community.name}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @community.name, @community %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Threads</span>
+  </div>
+
+  <section aria-labelledby="threads-title">
+    <div class="section-heading">
+      <h1 id="threads-title">Threads</h1>
+      <%= link_to "New Thread", new_community_thread_path(@community), class: "button" %>
+    </div>
+
+    <% if @threads.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @threads.each do |thread| %>
+            <tr>
+              <td><%= link_to thread.title, thread_path(thread) %></td>
+              <td><%= thread.author_member.wallet_address %></td>
+              <td><%= time_tag thread.created_at, thread.created_at.to_fs(:short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No threads yet.</p>
+    <% end %>
+  </section>
+</main>

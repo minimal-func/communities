@@ -1,0 +1,51 @@
+<% content_for :title, @thread.title %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @thread.community.name, @thread.community %>
+    <span class="breadcrumb-sep">/</span>
+    <span><%= @thread.title %></span>
+  </div>
+
+  <section aria-labelledby="thread-title">
+    <div class="thread-header">
+      <h1 id="thread-title"><%= @thread.title %></h1>
+      <p class="meta-line">
+        Posted by <%= @thread.author_member.wallet_address %>
+        &middot; <%= time_tag @thread.created_at, @thread.created_at.to_fs(:short) %>
+      </p>
+    </div>
+
+    <% if @thread.body.present? %>
+      <article class="panel">
+        <p class="body-text"><%= @thread.body %></p>
+      </article>
+    <% end %>
+
+    <div class="actions-row mt-2">
+      <%= link_to "New Post", new_thread_post_path(@thread), class: "button" %>
+      <%= link_to "Edit", edit_thread_path(@thread), class: "button button-secondary" %>
+        <%= button_to "Delete", thread_path(@thread), method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this thread?" } %>
+    </div>
+  </section>
+
+  <section class="mt-2" aria-labelledby="posts-title">
+    <h2 id="posts-title">Posts</h2>
+
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <article class="panel post-card mb-1">
+          <p class="meta-line">
+            <%= post.author_member.wallet_address %>
+            &middot; <%= time_tag post.created_at, post.created_at.to_fs(:short) %>
+          </p>
+          <p class="body-text"><%= post.body %></p>
+        </article>
+      <% end %>
+    <% else %>
+      <p class="empty-state">No posts yet.</p>
+    <% end %>
+  </section>
+</main>

@@ -1,0 +1,17 @@
+<% content_for :title, "New Thread in #{@community.name}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @community.name, @community %>
+    <span class="breadcrumb-sep">/</span>
+    <span>New Thread</span>
+  </div>
+
+  <section aria-labelledby="new-thread-title">
+    <h1 id="new-thread-title">New Thread</h1>
+
+    <%= render "form", thread: @thread, community: @community %>
+  </section>
+</main>

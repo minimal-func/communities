@@ -1,0 +1,19 @@
+<%= form_with model: post, url: post.persisted? ? post_path(post) : thread_posts_path(thread), class: "panel" do |form| %>
+  <% if post.errors.any? %>
+    <div id="error_explanation">
+      <p><%= pluralize(post.errors.count, "error") %> prevented this post from being saved:</p>
+      <ul>
+        <% post.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :body, "Post" %>
+    <%= form.text_area :body, rows: 6, required: true %>
+  </div>
+
+  <%= form.submit %>
+<% end %>

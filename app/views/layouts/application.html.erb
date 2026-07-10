@@ -25,6 +25,25 @@
   </head>
 
   <body>
+    <header class="site-header">
+      <nav class="site-nav">
+        <div class="site-nav-left">
+          <%= link_to "Communities", communities_path, class: "site-nav-brand" %>
+        </div>
+        <div class="site-nav-right">
+          <% if current_member %>
+            <span class="site-nav-address"><%= current_member.wallet_address %></span>
+            <% if current_member.admin? %>
+              <%= link_to "Invite", new_wallet_invitation_path, class: "site-nav-link" %>
+            <% end %>
+            <%= button_to "Sign out", session_path, method: :delete, class: "site-nav-button" %>
+          <% else %>
+            <%= link_to "Sign in", login_path, class: "site-nav-link" %>
+          <% end %>
+        </div>
+      </nav>
+    </header>
+
     <% if notice.present? || alert.present? %>
       <div class="flash-stack" role="status" aria-live="polite">
         <% if notice.present? %>

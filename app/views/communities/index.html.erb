@@ -1,0 +1,38 @@
+<% content_for :title, "Communities" %>
+
+<main class="container">
+  <section aria-labelledby="communities-title">
+    <div class="section-heading">
+      <div>
+        <p class="login-kicker">Communities</p>
+        <h1 id="communities-title">All Communities</h1>
+      </div>
+      <%= link_to "New Community", new_community_path, class: "button" %>
+    </div>
+
+    <% if @communities.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Created by</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @communities.each do |community| %>
+            <tr>
+              <td><%= link_to community.name, community %></td>
+              <td><%= community.slug %></td>
+              <td><%= community.created_by_member.wallet_address %></td>
+              <td><%= time_tag community.created_at, community.created_at.to_fs(:short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No communities yet.</p>
+    <% end %>
+  </section>
+</main>

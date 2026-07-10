@@ -1,0 +1,19 @@
+<% content_for :title, "Edit Post" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @post.community_thread.community.name, @post.community_thread.community %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @post.community_thread.title, thread_path(@post.community_thread) %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Edit Post</span>
+  </div>
+
+  <section aria-labelledby="edit-post-title">
+    <h1 id="edit-post-title">Edit Post</h1>
+
+    <%= render "form", post: @post, thread: @post.community_thread %>
+  </section>
+</main>

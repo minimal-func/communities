@@ -1,0 +1,29 @@
+<%= form_with model: community, class: "panel" do |form| %>
+  <% if community.errors.any? %>
+    <div id="error_explanation">
+      <p><%= pluralize(community.errors.count, "error") %> prevented this community from being saved:</p>
+      <ul>
+        <% community.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :slug %>
+    <%= form.text_field :slug %>
+  </div>
+
+  <div>
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 4 %>
+  </div>
+
+  <%= form.submit %>
+<% end %>

@@ -9,9 +9,14 @@ Rails.application.routes.draw do
   resources :wallet_invitations, only: %i[index new create]
   ActiveAdmin.routes(self)
 
-  resources :communities
-  resources :threads, controller: :threads
-  resources :posts
+  resources :communities do
+    resources :threads, controller: :threads, shallow: true
+  end
+
+  resources :threads, only: [] do
+    resources :posts, shallow: true
+  end
+
   resources :comments
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
