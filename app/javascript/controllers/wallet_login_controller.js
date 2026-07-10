@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { createProvider } from "../providers/index"
+import { createProvider } from "providers"
 
 export default class extends Controller {
   static targets = ["walletAddress", "connectButton", "submitButton", "status", "providerButton"]
@@ -11,7 +11,7 @@ export default class extends Controller {
     this.highlightProvider()
   }
 
-  selectProvider(event) {
+  async selectProvider(event) {
     const key = event.currentTarget.dataset.providerKey
     if (key === this.providerValue) return
 
@@ -24,7 +24,7 @@ export default class extends Controller {
     }
 
     if (this.provider && typeof this.provider.disconnect === "function") {
-      this.provider.disconnect()
+      await this.provider.disconnect()
     }
 
     this.provider = newProvider

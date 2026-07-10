@@ -13,4 +13,4 @@ pin "jquery-ui", to: "https://ga.jspm.io/npm:jquery-ui@1.14.1/ui/widget.js"
 pin "jquery-ujs", to: "https://ga.jspm.io/npm:jquery-ujs@1.2.3/src/rails.js"
 
 active_admin_path = Gem.loaded_specs["activeadmin"].full_gem_path
-pin_all_from File.join(active_admin_path, "app/javascript/active_admin"), under: "active_admin", to: "active_admin/"
+pin_all_from File.join(active_admin_path, "app/javascript/active_admin"), under: "active_admin", to: "active_admin"

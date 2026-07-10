@@ -1,6 +1,6 @@
-import BrowserProvider from "./browser_provider"
-import WalletConnectProvider from "./walletconnect_provider"
-import LedgerProvider from "./ledger_provider"
+import BrowserProvider from "providers/browser_provider"
+import WalletConnectProvider from "providers/walletconnect_provider"
+import LedgerProvider from "providers/ledger_provider"
 
 const registry = {
   browser: BrowserProvider,
