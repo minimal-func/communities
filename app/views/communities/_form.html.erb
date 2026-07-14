@@ -10,20 +10,22 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="field">
     <%= form.label :name %>
     <%= form.text_field :name, required: true %>
   </div>
 
-  <div>
+  <div class="field">
     <%= form.label :slug %>
     <%= form.text_field :slug %>
   </div>
 
-  <div>
+  <div class="field">
     <%= form.label :description %>
     <%= form.text_area :description, rows: 4 %>
   </div>
 
-  <%= form.submit %>
+  <div class="actions-row">
+    <%= form.submit %>
+  </div>
 <% end %>

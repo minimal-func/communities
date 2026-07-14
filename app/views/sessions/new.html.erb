@@ -15,8 +15,10 @@
           <p class="wallet-address"><%= current_member.wallet_address %></p>
         </div>
 
-        <%= link_to "Invite wallet", new_wallet_invitation_path, class: "button" %>
-        <%= button_to "Sign out", session_path, method: :delete, class: "button button-secondary" %>
+        <div class="actions-row">
+          <%= link_to "Invite wallet", new_wallet_invitation_path, class: "button" %>
+          <%= button_to "Sign out", session_path, method: :delete, class: "button button-secondary" %>
+        </div>
       </div>
     <% else %>
       <form class="wallet-card" data-controller="wallet-login" data-action="submit->wallet-login#submit">
@@ -45,7 +47,7 @@
           </button>
         </fieldset>
 
-        <div>
+        <div class="field">
           <label for="wallet_address">Wallet address</label>
           <input
             id="wallet_address"
@@ -57,13 +59,15 @@
           >
         </div>
 
-        <button type="button" data-action="wallet-login#connectWallet" data-wallet-login-target="connectButton">
-          Connect wallet
-        </button>
+        <div class="actions-row">
+          <button type="button" data-action="wallet-login#connectWallet" data-wallet-login-target="connectButton">
+            Connect wallet
+          </button>
 
-        <button type="submit" data-wallet-login-target="submitButton">
-          Sign in
-        </button>
+          <button type="submit" data-wallet-login-target="submitButton">
+            Sign in
+          </button>
+        </div>
 
         <p class="login-status" data-wallet-login-target="status" role="status" aria-live="polite"></p>
       </form>

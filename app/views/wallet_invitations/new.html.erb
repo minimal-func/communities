@@ -9,13 +9,15 @@
     </div>
 
     <%= form_with model: @wallet_invitation, url: wallet_invitations_path, class: "wallet-card" do |form| %>
-      <div>
+      <div class="field">
         <%= form.label :wallet_address, "Wallet address" %>
         <%= form.text_field :wallet_address, autocomplete: "off", inputmode: "text", placeholder: "0x..." %>
       </div>
 
-      <%= form.submit "Create invitation" %>
-      <%= link_to "Back to login", login_path, class: "button button-secondary" %>
+      <div class="actions-row">
+        <%= form.submit "Create invitation" %>
+        <%= link_to "Back to login", login_path, class: "button button-secondary" %>
+      </div>
     <% end %>
   </section>
 

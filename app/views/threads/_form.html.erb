@@ -10,15 +10,17 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="field">
     <%= form.label :title %>
     <%= form.text_field :title, required: true %>
   </div>
 
-  <div>
+  <div class="field">
     <%= form.label :body %>
     <%= form.text_area :body, rows: 8 %>
   </div>
 
-  <%= form.submit %>
+  <div class="actions-row">
+    <%= form.submit %>
+  </div>
 <% end %>
