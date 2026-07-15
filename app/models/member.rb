@@ -16,6 +16,7 @@ class Member < ApplicationRecord
   has_many :comments,
     foreign_key: :author_member_id,
     dependent: :restrict_with_exception
+  has_many :images, foreign_key: :author_member_id, dependent: :destroy
   has_many :community_members, dependent: :destroy
   has_many :member_communities, through: :community_members, source: :community
 

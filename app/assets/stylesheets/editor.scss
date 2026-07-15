@@ -122,6 +122,13 @@
   margin: 1rem 0;
 }
 
+.tiptap-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 0.5rem 0;
+}
+
 .tiptap-editor a.editor-link {
   color: var(--accent);
   text-decoration: underline;
@@ -372,6 +379,13 @@
   border: none;
   border-top: 1px solid rgba(0, 212, 255, 0.2);
   margin: 1rem 0;
+}
+
+.post-body-rendered img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: 0.5rem 0;
 }
 
 .post-body-rendered a {

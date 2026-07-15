@@ -30,9 +30,19 @@
       <button type="button" data-command="blockquote" title="Blockquote">&rdquo;</button>
       <button type="button" data-command="codeBlock" title="Code Block">{ }</button>
       <button type="button" data-command="horizontalRule" title="Divider">&mdash;</button>
+      <span class="toolbar-separator"></span>
+      <button type="button" data-command="link" title="Link">&#8599;</button>
+      <button type="button" data-command="image" title="Attach Image">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      </button>
     </div>
     <div data-rich-text-editor-target="editor"><%= sanitize(post.body, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) if post.body.present? %></div>
     <%= form.hidden_field :body, data: { rich_text_editor_target: "input" } %>
+    <input type="file" data-rich-text-editor-target="fileInput" accept="image/*" hidden>
   </div>
 
   <div class="actions-row">

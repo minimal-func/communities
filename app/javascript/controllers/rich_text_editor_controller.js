@@ -2,9 +2,11 @@ import { Controller } from "@hotwired/stimulus"
 import { Editor } from "@tiptap/core"
 import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
+import Image from "@tiptap/extension-image"
+import Link from "@tiptap/extension-link"
 
 export default class extends Controller {
-  static targets = ["editor", "input"]
+  static targets = ["editor", "input", "fileInput"]
   static values = {
     placeholder: { type: String, default: "Start typing..." },
   }
@@ -13,9 +15,20 @@ export default class extends Controller {
     this.editor = new Editor({
       element: this.editorTarget,
       extensions: [
-        StarterKit,
+        StarterKit.configure({
+          link: false,
+        }),
         Placeholder.configure({
           placeholder: this.placeholderValue,
+        }),
+        Image.configure({
+          inline: true,
+        }),
+        Link.configure({
+          openOnClick: false,
+          HTMLAttributes: {
+            class: "editor-link",
+          },
         }),
       ],
       editorProps: {
@@ -33,6 +46,7 @@ export default class extends Controller {
     })
     this.syncInput(this.editor)
     this.setupToolbar()
+    this.setupFileInput()
   }
 
   disconnect() {
@@ -53,6 +67,13 @@ export default class extends Controller {
     })
   }
 
+  setupFileInput() {
+    this.fileInputTarget.addEventListener("change", (e) => {
+      const file = e.target.files[0]
+      if (file) this.uploadImage(file)
+    })
+  }
+
   executeCommand(btn) {
     const command = btn.dataset.command
     const level = btn.dataset.level
@@ -69,7 +90,64 @@ export default class extends Controller {
       case "blockquote": chain.toggleBlockquote().run(); break
       case "codeBlock": chain.toggleCodeBlock().run(); break
       case "horizontalRule": chain.setHorizontalRule().run(); break
+      case "link": this.toggleLink(); break
+      case "image": this.addImage(); break
     }
+  }
+
+  toggleLink() {
+    const { editor } = this
+    if (editor.isActive("link")) {
+      const href = window.prompt("Edit URL", editor.getAttributes("link").href || "")
+      if (href === null) return
+      if (href === "") {
+        editor.chain().focus().unsetLink().run()
+      } else {
+        editor.chain().focus().setLink({ href }).run()
+      }
+    } else {
+      const href = window.prompt("Enter URL", "https://")
+      if (href) {
+        editor.chain().focus().setLink({ href }).run()
+      }
+    }
+  }
+
+  addImage() {
+    this.fileInputTarget.value = ""
+    this.fileInputTarget.click()
+  }
+
+  uploadImage(file) {
+    const formData = new FormData()
+    formData.append("image[file]", file)
+
+    const btn = this.element.querySelector("[data-command='image']")
+    const original = btn.innerHTML
+    btn.disabled = true
+    btn.innerHTML = "..."
+
+    const csrfToken = document.querySelector("[name='csrf-token']")?.content
+
+    fetch("/images", {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json", "X-CSRF-Token": csrfToken },
+    })
+      .then((res) => {
+        if (!res.ok) return res.json().then((d) => { throw new Error(d.errors?.join(", ") || "Upload failed") })
+        return res.json()
+      })
+      .then((data) => {
+        this.editor.chain().focus().setImage({ src: data.url }).run()
+      })
+      .catch((err) => {
+        alert(err.message)
+      })
+      .finally(() => {
+        btn.innerHTML = original
+        btn.disabled = false
+      })
   }
 
   updateToolbar() {
@@ -89,6 +167,7 @@ export default class extends Controller {
         case "blockquote": isActive = this.editor.isActive("blockquote"); break
         case "codeBlock": isActive = this.editor.isActive("codeBlock"); break
         case "horizontalRule": isActive = this.editor.isActive("horizontalRule"); break
+        case "link": isActive = this.editor.isActive("link"); break
       }
 
       btn.classList.toggle("is-active", isActive)
