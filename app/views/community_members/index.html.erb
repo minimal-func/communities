@@ -1,0 +1,59 @@
+<% content_for :title, "Members of #{@community.name}" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <%= link_to @community.name, @community %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Members</span>
+  </div>
+
+  <section aria-labelledby="members-title">
+    <div class="section-heading">
+      <h1 id="members-title">Members</h1>
+    </div>
+
+    <div class="panel mb-2">
+      <h2>Add Member</h2>
+      <%= form_with url: community_members_path(@community), local: true, class: "inline-form" do |form| %>
+        <div class="field">
+          <%= form.label :wallet_address, "Wallet Address" %>
+          <%= form.text_field :wallet_address, placeholder: "0x...", required: true %>
+        </div>
+        <div class="actions-row">
+          <%= form.submit "Add to community" %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @members.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Wallet</th>
+            <th>Role</th>
+            <th>Added</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @members.each do |cm| %>
+            <tr>
+              <td><%= cm.member.wallet_address %></td>
+              <td><%= cm.role %></td>
+              <td><%= time_tag cm.created_at, cm.created_at.to_fs(:short) %></td>
+              <td>
+                <% if cm.role != "admin" %>
+                  <%= button_to "Remove", community_member_path(@community, cm), method: :delete, data: { turbo_confirm: "Remove this member?" }, class: "button button-danger button-small" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No members yet.</p>
+    <% end %>
+  </section>
+</main>

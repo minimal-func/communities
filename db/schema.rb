@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_07_124753) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_08_000000) do
   create_table "admin_users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -42,6 +42,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_124753) do
     t.datetime "updated_at", null: false
     t.index ["created_by_member_id"], name: "index_communities_on_created_by_member_id"
     t.index ["slug"], name: "index_communities_on_slug", unique: true
+  end
+
+  create_table "community_members", force: :cascade do |t|
+    t.integer "community_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "member_id", null: false
+    t.string "role", default: "member", null: false
+    t.datetime "updated_at", null: false
+    t.index ["community_id", "member_id"], name: "index_community_members_on_community_id_and_member_id", unique: true
+    t.index ["community_id"], name: "index_community_members_on_community_id"
+    t.index ["member_id"], name: "index_community_members_on_member_id"
   end
 
   create_table "community_threads", force: :cascade do |t|
@@ -102,6 +113,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_07_124753) do
   add_foreign_key "comments", "members", column: "author_member_id"
   add_foreign_key "comments", "posts"
   add_foreign_key "communities", "members", column: "created_by_member_id"
+  add_foreign_key "community_members", "communities"
+  add_foreign_key "community_members", "members"
   add_foreign_key "community_threads", "communities"
   add_foreign_key "community_threads", "members", column: "author_member_id"
   add_foreign_key "members", "members", column: "invited_by_member_id"

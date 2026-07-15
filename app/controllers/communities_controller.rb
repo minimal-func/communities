@@ -1,6 +1,7 @@
 class CommunitiesController < ApplicationController
   before_action :require_member
   before_action :set_community, only: %i[show edit update destroy]
+  before_action :require_community_admin, only: %i[edit update destroy]
 
   def index
     @communities = Community.order(created_at: :desc)
@@ -12,6 +13,8 @@ class CommunitiesController < ApplicationController
   end
 
   def show
+    @is_admin = @community.admin?(current_member)
+    @is_member = @community.member?(current_member)
     @threads = @community.community_threads.order(created_at: :desc)
 
     respond_to do |format|
@@ -30,7 +33,12 @@ class CommunitiesController < ApplicationController
   end
 
   def create
-    @community = current_member.communities.create!(community_params)
+    @community = Community.new(community_params.merge(created_by_member_id: current_member.id))
+
+    CommunityMember.transaction do
+      @community.save!
+      @community.community_members.create!(member: current_member, role: "admin")
+    end
 
     respond_to do |format|
       format.html { redirect_to @community, notice: "Community created." }
@@ -76,6 +84,10 @@ class CommunitiesController < ApplicationController
 
   def set_community
     @community = Community.find(params[:id])
+  end
+
+  def require_community_admin
+    require_community_admin!(@community)
   end
 
   def community_params

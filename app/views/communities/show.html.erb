@@ -17,8 +17,11 @@
       </div>
       <div class="actions-row">
         <%= link_to "New Thread", new_community_thread_path(@community), class: "button" %>
-        <%= link_to "Edit", edit_community_path(@community), class: "button button-secondary" %>
-        <%= button_to "Delete", @community, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this community?" } %>
+        <% if @is_admin %>
+          <%= link_to "Members", community_members_path(@community), class: "button button-secondary" %>
+          <%= link_to "Edit", edit_community_path(@community), class: "button button-secondary" %>
+          <%= button_to "Delete", @community, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this community?" } %>
+        <% end %>
       </div>
     </div>
 

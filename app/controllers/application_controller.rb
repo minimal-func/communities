@@ -31,4 +31,22 @@ class ApplicationController < ActionController::Base
       redirect_to login_path, alert: "Sign in as an admin to continue."
     end
   end
+
+  def require_community_admin!(community)
+    return if community.admin?(current_member)
+
+    respond_to do |format|
+      format.html { redirect_to community, alert: "You don't have permission to do that." }
+      format.json { render json: { error: "Forbidden" }, status: :forbidden }
+    end
+  end
+
+  def require_community_member!(community)
+    return if community.member?(current_member)
+
+    respond_to do |format|
+      format.html { redirect_to community, alert: "You are not a member of this community." }
+      format.json { render json: { error: "Forbidden" }, status: :forbidden }
+    end
+  end
 end
