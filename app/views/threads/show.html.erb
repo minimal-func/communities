@@ -41,7 +41,7 @@
             <%= post.author_member.wallet_address %>
             &middot; <%= time_tag post.created_at, post.created_at.to_fs(:short) %>
           </p>
-          <p class="body-text"><%= post.body %></p>
+          <div class="post-body-rendered"><%= render_post_body(post.body) %></div>
         </article>
       <% end %>
     <% else %>

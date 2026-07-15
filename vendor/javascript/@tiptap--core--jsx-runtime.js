@@ -1,0 +1,2 @@
+// @tiptap/core/jsx-runtime@3.27.4 — inlined to avoid relative import of _/Bz2Filul.js
+function F(e){return e.children}var h=(e,t)=>{if(e==="slot")return 0;if(e instanceof Function)return e(t);let{children:n,...r}=t==null?{}:t;if(e==="svg")throw Error("SVG elements are not supported in the JSX syntax, use the array syntax instead");return[e,r,n]};export{F as Fragment,h as createElement,h as h,h as jsx,h as jsxDEV,h as jsxs};

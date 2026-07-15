@@ -10,9 +10,29 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :body, "Post" %>
-    <%= form.text_area :body, rows: 6, required: true %>
+  <div
+    data-controller="rich-text-editor"
+    class="editor-shell"
+  >
+    <%= form.label :body, "Post", class: "field-label" %>
+    <div class="editor-toolbar" role="toolbar" aria-label="Formatting">
+      <button type="button" data-command="bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+      <button type="button" data-command="italic" title="Italic (Ctrl+I)"><em>I</em></button>
+      <button type="button" data-command="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+      <button type="button" data-command="strike" title="Strikethrough"><s>S</s></button>
+      <span class="toolbar-separator"></span>
+      <button type="button" data-command="heading" data-level="1" title="Heading 1">H1</button>
+      <button type="button" data-command="heading" data-level="2" title="Heading 2">H2</button>
+      <button type="button" data-command="heading" data-level="3" title="Heading 3">H3</button>
+      <span class="toolbar-separator"></span>
+      <button type="button" data-command="bulletList" title="Bullet List">&bull;</button>
+      <button type="button" data-command="orderedList" title="Numbered List">1.</button>
+      <button type="button" data-command="blockquote" title="Blockquote">&rdquo;</button>
+      <button type="button" data-command="codeBlock" title="Code Block">{ }</button>
+      <button type="button" data-command="horizontalRule" title="Divider">&mdash;</button>
+    </div>
+    <div data-rich-text-editor-target="editor"><%= sanitize(post.body, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) if post.body.present? %></div>
+    <%= form.hidden_field :body, data: { rich_text_editor_target: "input" } %>
   </div>
 
   <div class="actions-row">
