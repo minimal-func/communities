@@ -6,5 +6,5 @@
       <%= button_to "Delete", comment_path(comment), method: :delete, class: "button button-danger button-small", data: { turbo_confirm: "Delete this comment?" } %>
     <% end %>
   </p>
-  <div class="body-text"><%= comment.body %></div>
+  <div class="post-body-rendered"><%= render_post_body(comment.body) %></div>
 </article>

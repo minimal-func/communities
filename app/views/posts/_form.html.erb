@@ -40,6 +40,40 @@
         </svg>
       </button>
       <button type="button" data-command="embed" title="Embed URL">&uarr;&darr;</button>
+      <span class="toolbar-separator"></span>
+      <button type="button" data-emoji-toggle onclick="var p=this.parentElement.querySelector('.emoji-picker');if(p)p.style.display=p.style.display==='none'?'block':'none'" title="Emoji">😊</button>
+      <div class="emoji-picker" data-rich-text-editor-target="emojiPicker" style="display:none">
+        <div class="emoji-picker-row">
+          <button type="button" class="emoji-picker-btn" data-emoji="😀">😀</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😃">😃</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😄">😄</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😁">😁</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😅">😅</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😂">😂</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🤣">🤣</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😊">😊</button>
+        </div>
+        <div class="emoji-picker-row">
+          <button type="button" class="emoji-picker-btn" data-emoji="😍">😍</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🥰">🥰</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😘">😘</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="😎">😎</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="👍">👍</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="👎">👎</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="❤️">❤️</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🔥">🔥</button>
+        </div>
+        <div class="emoji-picker-row">
+          <button type="button" class="emoji-picker-btn" data-emoji="✨">✨</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🎉">🎉</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="💯">💯</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="⭐">⭐</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🐶">🐶</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🍕">🍕</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🎈">🎈</button>
+          <button type="button" class="emoji-picker-btn" data-emoji="🙌">🙌</button>
+        </div>
+      </div>
     </div>
     <div data-rich-text-editor-target="editor"><%= sanitize(post.body, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) if post.body.present? %></div>
     <%= form.hidden_field :body, data: { rich_text_editor_target: "input" } %>

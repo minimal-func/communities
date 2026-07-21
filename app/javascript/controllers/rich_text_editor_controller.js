@@ -7,6 +7,7 @@ import Link from "@tiptap/extension-link"
 import { SlashMenu } from "lib/slash_menu"
 import { Embed } from "lib/embed_extension"
 
+
 export default class extends Controller {
   static targets = ["editor", "input", "fileInput"]
   static values = {
@@ -51,10 +52,14 @@ export default class extends Controller {
     this.syncInput(this.editor)
     this.setupToolbar()
     this.setupFileInput()
+    this.setupEmojiPicker()
   }
 
   disconnect() {
     this.editor?.destroy()
+    if (this._emojiCloseHandler) {
+      document.removeEventListener("click", this._emojiCloseHandler)
+    }
   }
 
   syncInput(editor) {
@@ -72,10 +77,35 @@ export default class extends Controller {
   }
 
   setupFileInput() {
+    if (!this.hasFileInputTarget) return
     this.fileInputTarget.addEventListener("change", (e) => {
       const file = e.target.files[0]
       if (file) this.uploadImage(file)
     })
+  }
+
+  setupEmojiPicker() {
+    const picker = this.element.querySelector(".emoji-picker")
+    if (!picker) return
+
+    picker.addEventListener("click", (e) => {
+      const btn = e.target.closest(".emoji-picker-btn")
+      if (!btn) return
+      e.preventDefault()
+      const emoji = btn.dataset.emoji
+      if (emoji) {
+        this.editor.chain().focus().insertContent(emoji).run()
+        picker.style.display = "none"
+      }
+    })
+
+    this._emojiCloseHandler = (e) => {
+      if (picker.style.display === "none") return
+      if (!picker.contains(e.target) && !e.target.closest("[data-emoji-toggle]")) {
+        picker.style.display = "none"
+      }
+    }
+    document.addEventListener("click", this._emojiCloseHandler)
   }
 
   executeCommand(btn) {

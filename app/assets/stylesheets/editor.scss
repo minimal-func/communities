@@ -252,6 +252,7 @@
 /* ─── Toolbar ──────────────────────────────────────────────── */
 
 .editor-toolbar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
@@ -639,4 +640,44 @@
   height: auto;
   border-radius: 4px;
   margin: 0.35rem 0;
+}
+
+/* ─── Emoji Picker ──────────────────────────────────────────── */
+
+.emoji-picker {
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+  background: #12162a;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+.emoji-picker-row {
+  display: flex;
+  gap: 2px;
+}
+
+.emoji-picker-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  background: none;
+  transition: background 0.1s, transform 0.1s;
+}
+
+.emoji-picker-btn:hover {
+  background: rgba(0, 212, 255, 0.1);
+  transform: scale(1.15);
 }
