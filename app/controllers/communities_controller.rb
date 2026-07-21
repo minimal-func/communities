@@ -13,7 +13,7 @@ class CommunitiesController < ApplicationController
   end
 
   def show
-    @is_admin = @community.admin?(current_member)
+    @is_admin = current_member&.admin? || @community.admin?(current_member)
     @is_member = @community.member?(current_member)
     @threads = @community.community_threads.order(created_at: :desc)
 

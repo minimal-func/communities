@@ -14,6 +14,8 @@ class PostsController < ApplicationController
   end
 
   def show
+    @comments = @post.comments.includes(:author_member)
+
     respond_to do |format|
       format.html
       format.json { render json: post_json(@post) }

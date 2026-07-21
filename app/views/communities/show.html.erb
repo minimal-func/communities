@@ -12,7 +12,7 @@
       <div>
         <h1 id="community-title"><%= @community.name %></h1>
         <% if @community.description.present? %>
-          <p class="text-muted mt-1"><%= @community.description %></p>
+          <div class="description-rendered text-muted mt-1"><%= sanitize(@community.description, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) %></div>
         <% end %>
       </div>
       <div class="actions-row">

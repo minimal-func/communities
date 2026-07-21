@@ -38,11 +38,12 @@
       <% @posts.each do |post| %>
         <article class="panel post-card mb-1">
           <p class="meta-line">
-            <%= post.author_member.wallet_address %>
+            <%= link_to post.author_member.wallet_address, post_path(post) %>
             &middot; <%= time_tag post.created_at, post.created_at.to_fs(:short) %>
             <% if post.visibility != "members" %>
               <span class="badge badge-<%= post.visibility %>"><%= post.visibility.humanize %></span>
             <% end %>
+            <%= link_to "View", post_path(post), class: "button button-secondary button-small" %>
             <% if current_member && (post.author_member == current_member || current_member.admin?) %>
               <%= link_to "Edit", edit_post_path(post), class: "button button-secondary button-small" %>
               <%= button_to "Delete", post_path(post), method: :delete, class: "button button-danger button-small", data: { turbo_confirm: "Delete this post?" } %>

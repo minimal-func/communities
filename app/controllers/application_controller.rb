@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_community_admin!(community)
-    return if community.admin?(current_member)
+    return if current_member&.admin? || community.admin?(current_member)
 
     respond_to do |format|
       format.html { redirect_to community, alert: "You don't have permission to do that." }

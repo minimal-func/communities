@@ -1,0 +1,10 @@
+<article class="panel post-card mb-1" id="<%= dom_id(comment) %>">
+  <p class="meta-line">
+    <%= comment.author_member.wallet_address %>
+    &middot; <%= time_tag comment.created_at, comment.created_at.to_fs(:short) %>
+    <% if current_member && (comment.author_member == current_member || current_member.admin?) %>
+      <%= button_to "Delete", comment_path(comment), method: :delete, class: "button button-danger button-small", data: { turbo_confirm: "Delete this comment?" } %>
+    <% end %>
+  </p>
+  <div class="body-text"><%= comment.body %></div>
+</article>

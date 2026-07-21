@@ -1,0 +1,10 @@
+<%= form_with model: [@post, Comment.new], url: comments_path, local: true do |form| %>
+  <%= form.hidden_field :post_id, value: @post.id %>
+
+  <div class="field">
+    <%= form.label :body, "Add a comment" %>
+    <%= form.text_area :body, rows: 3, placeholder: "Write a comment…" %>
+  </div>
+
+  <%= form.submit "Post Comment" %>
+<% end %>

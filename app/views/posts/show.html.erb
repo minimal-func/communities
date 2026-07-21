@@ -29,4 +29,16 @@
       <%= button_to "Delete", @post, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this post?" } %>
     </div>
   </section>
+
+  <section class="mt-2" aria-labelledby="comments-title">
+    <h2 id="comments-title">Comments</h2>
+
+    <% if @comments.any? %>
+      <%= render partial: "comments/comment", collection: @comments %>
+    <% else %>
+      <p class="empty-state">No comments yet.</p>
+    <% end %>
+
+    <%= render "comments/form" %>
+  </section>
 </main>
