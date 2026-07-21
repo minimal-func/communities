@@ -4,6 +4,8 @@ import StarterKit from "@tiptap/starter-kit"
 import Placeholder from "@tiptap/extension-placeholder"
 import Image from "@tiptap/extension-image"
 import Link from "@tiptap/extension-link"
+import { SlashMenu } from "lib/slash_menu"
+import { Embed } from "lib/embed_extension"
 
 export default class extends Controller {
   static targets = ["editor", "input", "fileInput"]
@@ -30,6 +32,8 @@ export default class extends Controller {
             class: "editor-link",
           },
         }),
+        SlashMenu,
+        Embed,
       ],
       editorProps: {
         attributes: {
@@ -92,6 +96,7 @@ export default class extends Controller {
       case "horizontalRule": chain.setHorizontalRule().run(); break
       case "link": this.toggleLink(); break
       case "image": this.addImage(); break
+      case "embed": this.addEmbed(); break
     }
   }
 
@@ -150,6 +155,13 @@ export default class extends Controller {
       })
   }
 
+  addEmbed() {
+    const url = window.prompt("Enter URL to embed")
+    if (url && url.trim()) {
+      this.editor.chain().focus().setEmbed({ url: url.trim() }).run()
+    }
+  }
+
   updateToolbar() {
     this.element.querySelectorAll("[data-command]").forEach((btn) => {
       const command = btn.dataset.command
@@ -168,6 +180,7 @@ export default class extends Controller {
         case "codeBlock": isActive = this.editor.isActive("codeBlock"); break
         case "horizontalRule": isActive = this.editor.isActive("horizontalRule"); break
         case "link": isActive = this.editor.isActive("link"); break
+        case "embed": isActive = this.editor.isActive("embed"); break
       }
 
       btn.classList.toggle("is-active", isActive)

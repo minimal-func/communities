@@ -56,6 +56,17 @@ const blockItems = [
     description: "Horizontal divider",
     command: (editor) => editor.chain().focus().setHorizontalRule().run(),
   },
+  {
+    title: "Embed",
+    icon: "\u25B6",
+    description: "YouTube video or link preview",
+    command: (editor) => {
+      const url = window.prompt("Enter URL to embed")
+      if (url && url.trim()) {
+        editor.chain().focus().setEmbed({ url: url.trim() }).run()
+      }
+    },
+  },
 ]
 
 function computeMenuPosition(view, menu) {

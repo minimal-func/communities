@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_15_122453) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_21_133118) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -118,8 +118,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_122453) do
     t.integer "community_thread_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "visibility", default: "members", null: false
     t.index ["author_member_id"], name: "index_posts_on_author_member_id"
     t.index ["community_thread_id"], name: "index_posts_on_community_thread_id"
+    t.index ["visibility"], name: "index_posts_on_visibility"
   end
 
   create_table "wallet_invitations", force: :cascade do |t|

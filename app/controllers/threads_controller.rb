@@ -1,5 +1,5 @@
 class ThreadsController < ApplicationController
-  before_action :require_member
+  before_action :require_member, except: %i[show]
   before_action :set_community, only: %i[index new create]
   before_action :set_thread, only: %i[show edit update destroy]
 
@@ -13,7 +13,7 @@ class ThreadsController < ApplicationController
   end
 
   def show
-    @posts = @thread.posts.order(created_at: :asc)
+    @posts = @thread.posts.visible_to_member(current_member, @thread.community).order(created_at: :asc)
 
     respond_to do |format|
       format.html

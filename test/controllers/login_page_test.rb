@@ -6,7 +6,7 @@ class LoginPageTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Member Login"
-    assert_select "form[data-action='wallet-login#submit']"
+    assert_select "form[data-controller='wallet-login']"
   end
 
   test "root renders login page" do

@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   before_action :require_member
   before_action :set_thread, only: %i[index new create]
   before_action :set_post, only: %i[show edit update destroy]
+  before_action :require_post_author_or_admin, only: %i[edit update destroy]
 
   def index
     @posts = @thread.posts.order(created_at: :asc)
@@ -82,8 +83,17 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
   end
 
+  def require_post_author_or_admin
+    return if @post.author_member == current_member || current_member.admin?
+
+    respond_to do |format|
+      format.html { redirect_to thread_path(@post.community_thread), alert: "You don't have permission to do that." }
+      format.json { render json: { error: "Forbidden" }, status: :forbidden }
+    end
+  end
+
   def post_params
-    (params[:post] || params).permit(:community_thread_id, :body)
+    (params[:post] || params).permit(:community_thread_id, :body, :visibility)
   end
 
   def post_json(post)
@@ -92,6 +102,7 @@ class PostsController < ApplicationController
       community_thread_id: post.community_thread_id,
       author_member_id: post.author_member_id,
       body: post.body,
+      visibility: post.visibility,
       created_at: post.created_at,
       updated_at: post.updated_at
     }

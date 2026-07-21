@@ -1,5 +1,5 @@
 class WalletInvitationsController < ApplicationController
-  before_action :require_member_for_wallet_invitations
+  before_action :authenticate_admin_member!, only: %i[index new create]
 
   def index
     @wallet_invitations = current_member.sent_wallet_invitations.order(created_at: :desc)

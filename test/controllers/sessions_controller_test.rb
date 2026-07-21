@@ -28,7 +28,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "invited wallet signs in and becomes a member" do
     inviter_key = ethereum_private_key
     invitee_key = ethereum_private_key
-    inviter = Member.create!(wallet_address: ethereum_address(inviter_key))
+    inviter = Member.create!(wallet_address: ethereum_address(inviter_key), admin: true)
     invitee_address = ethereum_address(invitee_key)
 
     sign_in_with_wallet(inviter, inviter_key)

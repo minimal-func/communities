@@ -26,7 +26,7 @@ class AdminUsersTest < ActionDispatch::IntegrationTest
 
     assert_difference("Member.count", 1) do
       post admin_users_path, params: {
-        user: {
+        member: {
           wallet_address: wallet_address,
           admin: "0"
         }

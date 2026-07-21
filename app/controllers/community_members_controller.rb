@@ -14,32 +14,34 @@ class CommunityMembersController < ApplicationController
   end
 
   def create
-    member = Member.find_by(wallet_address: params[:wallet_address])
+    wallet_address = EthereumWallet.normalize(params[:wallet_address])
+    member = Member.find_by(wallet_address: wallet_address)
 
-    if member.nil?
-      flash.now[:alert] = "No member found with that wallet address."
-      @members = @community.community_members.includes(:member).order(created_at: :desc)
-      @community_member = @community.community_members.build
-      render :index, status: :unprocessable_entity
-      return
+    if member
+      if @community.member?(member)
+        flash.now[:alert] = "Member is already part of this community."
+        @members = @community.community_members.includes(:member).order(created_at: :desc)
+        @community_member = @community.community_members.build
+        render :index, status: :unprocessable_entity
+        return
+      end
+
+      @community.community_members.create!(member: member, role: "member")
+
+      respond_to do |format|
+        format.html { redirect_to community_members_path(@community), notice: "Member added." }
+        format.json { head :created }
+      end
+    else
+      invitation = current_member.sent_wallet_invitations.create!(wallet_address: wallet_address)
+
+      respond_to do |format|
+        format.html { redirect_to community_members_path(@community), notice: "Invitation sent to #{invitation.wallet_address}." }
+        format.json { render json: invitation_json(invitation), status: :created }
+      end
     end
-
-    if @community.member?(member)
-      flash.now[:alert] = "Member is already part of this community."
-      @members = @community.community_members.includes(:member).order(created_at: :desc)
-      @community_member = @community.community_members.build
-      render :index, status: :unprocessable_entity
-      return
-    end
-
-    @community.community_members.create!(member: member, role: "member")
-
-    respond_to do |format|
-      format.html { redirect_to community_members_path(@community), notice: "Member added." }
-      format.json { head :created }
-    end
-  rescue ActiveRecord::RecordInvalid
-    flash.now[:alert] = "Could not add member."
+  rescue ActiveRecord::RecordInvalid => error
+    flash.now[:alert] = error.record.errors.full_messages.to_sentence
     @members = @community.community_members.includes(:member).order(created_at: :desc)
     @community_member = @community.community_members.build
     render :index, status: :unprocessable_entity
@@ -63,6 +65,15 @@ class CommunityMembersController < ApplicationController
 
   def require_community_admin
     require_community_admin!(@community)
+  end
+
+  def invitation_json(invitation)
+    {
+      id: invitation.id,
+      wallet_address: invitation.wallet_address,
+      invited_by_member_id: invitation.invited_by_member_id,
+      accepted_at: invitation.accepted_at
+    }
   end
 
   def community_member_json(cm)

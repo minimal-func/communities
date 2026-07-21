@@ -40,6 +40,13 @@
           <p class="meta-line">
             <%= post.author_member.wallet_address %>
             &middot; <%= time_tag post.created_at, post.created_at.to_fs(:short) %>
+            <% if post.visibility != "members" %>
+              <span class="badge badge-<%= post.visibility %>"><%= post.visibility.humanize %></span>
+            <% end %>
+            <% if current_member && (post.author_member == current_member || current_member.admin?) %>
+              <%= link_to "Edit", edit_post_path(post), class: "button button-secondary button-small" %>
+              <%= button_to "Delete", post_path(post), method: :delete, class: "button button-danger button-small", data: { turbo_confirm: "Delete this post?" } %>
+            <% end %>
           </p>
           <div class="post-body-rendered"><%= render_post_body(post.body) %></div>
         </article>

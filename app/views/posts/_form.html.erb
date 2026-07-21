@@ -39,10 +39,16 @@
           <polyline points="21 15 16 10 5 21"/>
         </svg>
       </button>
+      <button type="button" data-command="embed" title="Embed URL">&uarr;&darr;</button>
     </div>
     <div data-rich-text-editor-target="editor"><%= sanitize(post.body, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) if post.body.present? %></div>
     <%= form.hidden_field :body, data: { rich_text_editor_target: "input" } %>
     <input type="file" data-rich-text-editor-target="fileInput" accept="image/*" hidden>
+  </div>
+
+  <div class="field">
+    <%= form.label :visibility, "Visibility" %>
+    <%= form.select :visibility, Post.visibility_options, {}, class: "select-input" %>
   </div>
 
   <div class="actions-row">
