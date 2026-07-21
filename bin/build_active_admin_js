@@ -1,0 +1,121 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "bundler/setup"
+require "active_admin/version"
+GEM_PATH = Gem.loaded_specs["activeadmin"].full_gem_path
+AA_JS = File.join(GEM_PATH, "app/javascript/active_admin")
+OUTPUT = File.join(__dir__, "..", "app/assets/javascripts/active_admin.js")
+
+def read(path)
+  File.read(File.join(AA_JS, path))
+end
+
+def process_module(code)
+  code = code.dup
+
+  # Remove side-effect imports: import "something"
+  code.gsub!(/^import\s+"[^"]*"\s*;?\s*$/, "")
+  code.gsub!(/^import\s+'[^']*'\s*;?\s*$/, "")
+  # Remove import.meta references (not used in browser)
+  code.gsub!(/import\.meta\.[^\s;]*/, "({})")
+
+  # Replace default imports: import X from "y" → var X = window.X;
+  code.gsub!(/^import\s+(\w+)\s+from\s+"[^"]*"\s*;?\s*$/, 'var \1 = window.\1;')
+  code.gsub!(/^import\s+(\w+)\s+from\s+'[^']*'\s*;?\s*$/, 'var \1 = window.\1;')
+
+  # Replace named imports: import { a, b } from "y" → var a = window.a; var b = window.b;
+  code.gsub!(/^import\s+\{([^}]+)\}\s+from\s+"[^"]*"\s*;?\s*$/) do
+    names = $1.split(",").map(&:strip)
+    names.map { |n| "var #{n} = window.#{n};" }.join("\n")
+  end
+  code.gsub!(/^import\s+\{([^}]+)\}\s+from\s+'[^']*'\s*;?\s*$/) do
+    names = $1.split(",").map(&:strip)
+    names.map { |n| "var #{n} = window.#{n};" }.join("\n")
+  end
+
+  # Replace mixed: import X, { a, b } from "y" (not used in AA but handle gracefully)
+  code.gsub!(/^import\s+(\w+),\s*\{([^}]+)\}\s+from\s+"[^"]*"\s*;?\s*$/) do
+    default_var = $1
+    names = $2.split(",").map(&:strip)
+    lines = ["var #{default_var} = window.#{default_var};"]
+    lines += names.map { |n| "var #{n} = window.#{n};" }
+    lines.join("\n")
+  end
+  code.gsub!(/^import\s+(\w+),\s*\{([^}]+)\}\s+from\s+'[^']*'\s*;?\s*$/) do
+    default_var = $1
+    names = $2.split(",").map(&:strip)
+    lines = ["var #{default_var} = window.#{default_var};"]
+    lines += names.map { |n| "var #{n} = window.#{n};" }
+    lines.join("\n")
+  end
+
+  # Replace export default X; → window.X = X;
+  code.gsub!(/^export\s+default\s+(\w+)\s*;?\s*$/, 'window.\1 = \1;')
+
+  # Replace export { a, b }; → window.a = a; window.b = b;
+  code.gsub!(/^export\s+\{([^}]+)\}\s*;?\s*$/) do
+    names = $1.split(",").map(&:strip)
+    names.map { |n| "window.#{n} = #{n};" }.join("\n")
+  end
+
+  code
+end
+
+def wrap_iife(code)
+  "(function() {\n\n#{code}\n\n})();"
+end
+
+# Active Admin JS files (ordered by dependency)
+FILES = [
+  { path: "lib/utils.js" },
+  { path: "lib/modal-dialog.js" },
+  { path: "lib/checkbox-toggler.js" },
+  { path: "lib/dropdown-menu.js" },
+  { path: "lib/table-checkbox-toggler.js" },
+  { path: "lib/filters.js" },
+  { path: "lib/per-page.js" },
+  { path: "ext/jquery.js" },
+  { path: "ext/jquery-ui.js" },
+  { path: "initializers/batch-actions.js" },
+  { path: "initializers/checkbox-toggler.js" },
+  { path: "initializers/datepicker.js" },
+  { path: "initializers/dropdown-menu.js" },
+  { path: "initializers/filters.js" },
+  { path: "initializers/has-many.js" },
+  { path: "initializers/per-page.js" },
+  { path: "initializers/table-checkbox-toggler.js" },
+  { path: "initializers/tabs.js" },
+]
+
+parts = []
+
+# 1. Fetch external deps from CDN
+puts "Fetching jQuery 3.7.1..."
+parts << `curl -sL https://code.jquery.com/jquery-3.7.1.min.js`
+puts "Fetching jQuery UI 1.14.1..."
+parts << `curl -sL https://code.jquery.com/ui/1.14.1/jquery-ui.min.js`
+puts "Fetching jQuery UJS 1.2.3..."
+parts << `curl -sL https://cdn.jsdelivr.net/npm/jquery-ujs@1.2.3/src/rails.js`
+
+# 2. Add Active Admin gem files (processed as modules)
+FILES.each do |entry|
+  path = entry[:path]
+  puts "Adding #{path}..."
+  code = read(path)
+  code = process_module(code)
+  code = wrap_iife(code)
+  parts << code
+end
+
+# 3. Add base.js (re-exports ModalDialog)
+base_code = read("base.js")
+base_code = process_module(base_code)
+base_code = wrap_iife(base_code)
+parts << base_code
+
+# Write output
+output = parts.join("\n\n")
+File.write(OUTPUT, output)
+puts "Wrote #{OUTPUT} (#{output.length} bytes)"

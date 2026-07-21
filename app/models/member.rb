@@ -18,6 +18,7 @@ class Member < ApplicationRecord
     dependent: :restrict_with_exception
   has_many :images, foreign_key: :author_member_id, dependent: :destroy
   has_many :community_members, dependent: :destroy
+  accepts_nested_attributes_for :community_members, allow_destroy: true
   has_many :member_communities, through: :community_members, source: :community
 
   before_validation :normalize_wallet_address

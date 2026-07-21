@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Member, as: "User" do
-  actions :index, :new, :create
-  permit_params :wallet_address, :admin, :community_id, :community_role
+  actions :index, :new, :create, :edit, :update
+  permit_params :wallet_address, :admin,
+    community_members_attributes: [:id, :community_id, :role, :_destroy]
 
   menu priority: 2, label: "Users"
 
@@ -24,26 +25,12 @@ ActiveAdmin.register Member, as: "User" do
       f.input :wallet_address
       f.input :admin
     end
-    f.inputs "Community membership" do
-      f.input :community_id,
-        as: :select,
-        collection: Community.order(:name).map { |c| [c.name, c.id] },
-        include_blank: "No community",
-        label: "Community"
-      f.input :community_role,
-        as: :select,
-        collection: [["Member", "member"], ["Admin", "admin"]],
-        include_blank: true,
-        label: "Role"
+    f.inputs "Community memberships" do
+      f.has_many :community_members, allow_destroy: true, heading: "Memberships", new_record: "Add community membership" do |cmf|
+        cmf.input :community, collection: Community.order(:name).map { |c| [c.name, c.id] }
+        cmf.input :role, as: :select, collection: [["Member", "member"], ["Admin", "admin"]], include_blank: false
+      end
     end
     f.actions
-  end
-
-  after_create do |member|
-    community_id = params[:member][:community_id]
-    next if community_id.blank?
-
-    role = params[:member][:community_role].presence || "member"
-    member.community_members.create!(community_id: community_id, role: role)
   end
 end
