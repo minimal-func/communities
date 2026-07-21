@@ -31,10 +31,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     inviter = Member.create!(wallet_address: ethereum_address(inviter_key), admin: true)
     invitee_address = ethereum_address(invitee_key)
 
-    sign_in_with_wallet(inviter, inviter_key)
-
-    post wallet_invitations_path, params: { wallet_address: invitee_address }, as: :json
-    assert_response :created
+    WalletInvitation.create!(wallet_address: invitee_address, invited_by_member: inviter)
 
     post nonce_session_path, params: { wallet_address: invitee_address }
     assert_response :success
@@ -53,6 +50,35 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal inviter, member.invited_by_member
     assert_equal member, invitation.accepted_member
     assert_not_nil invitation.accepted_at
+  end
+
+  test "invited wallet with community auto-joins on sign in" do
+    inviter_key = ethereum_private_key
+    invitee_key = ethereum_private_key
+    inviter = Member.create!(wallet_address: ethereum_address(inviter_key), admin: true)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: inviter)
+    invitee_address = ethereum_address(invitee_key)
+
+    WalletInvitation.create!(
+      wallet_address: invitee_address,
+      invited_by_member: inviter,
+      community: community,
+      community_role: "admin"
+    )
+
+    post nonce_session_path, params: { wallet_address: invitee_address }
+    challenge = response.parsed_body
+    post session_path, params: {
+      wallet_address: invitee_address,
+      nonce: challenge.fetch("nonce"),
+      signature: personal_sign(invitee_key, challenge.fetch("message"))
+    }
+
+    assert_response :created
+
+    member = Member.find_by!(wallet_address: invitee_address)
+    assert community.member?(member)
+    assert community.admin?(member)
   end
 
   test "rejects invalid signatures" do

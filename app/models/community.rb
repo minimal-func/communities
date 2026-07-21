@@ -3,6 +3,7 @@ class Community < ApplicationRecord
   has_many :community_threads, dependent: :destroy
   has_many :community_members, dependent: :destroy
   has_many :members, through: :community_members
+  has_many :wallet_invitations, dependent: :nullify
 
   before_validation :normalize_slug
 

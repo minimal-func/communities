@@ -6,6 +6,7 @@ class CommunityMembersController < ApplicationController
   def index
     @members = @community.community_members.includes(:member).order(created_at: :desc)
     @community_member = @community.community_members.build
+    @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
 
     respond_to do |format|
       format.html
@@ -15,6 +16,7 @@ class CommunityMembersController < ApplicationController
 
   def create
     wallet_address = EthereumWallet.normalize(params[:wallet_address])
+    role = params[:role].presence_in(%w[admin member]) || "member"
     member = Member.find_by(wallet_address: wallet_address)
 
     if member
@@ -22,18 +24,23 @@ class CommunityMembersController < ApplicationController
         flash.now[:alert] = "Member is already part of this community."
         @members = @community.community_members.includes(:member).order(created_at: :desc)
         @community_member = @community.community_members.build
+        @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
         render :index, status: :unprocessable_entity
         return
       end
 
-      @community.community_members.create!(member: member, role: "member")
+      @community.community_members.create!(member: member, role: role)
 
       respond_to do |format|
         format.html { redirect_to community_members_path(@community), notice: "Member added." }
         format.json { head :created }
       end
     else
-      invitation = current_member.sent_wallet_invitations.create!(wallet_address: wallet_address)
+      invitation = current_member.sent_wallet_invitations.create!(
+        wallet_address: wallet_address,
+        community: @community,
+        community_role: role
+      )
 
       respond_to do |format|
         format.html { redirect_to community_members_path(@community), notice: "Invitation sent to #{invitation.wallet_address}." }
@@ -44,6 +51,7 @@ class CommunityMembersController < ApplicationController
     flash.now[:alert] = error.record.errors.full_messages.to_sentence
     @members = @community.community_members.includes(:member).order(created_at: :desc)
     @community_member = @community.community_members.build
+    @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
     render :index, status: :unprocessable_entity
   end
 
@@ -72,6 +80,8 @@ class CommunityMembersController < ApplicationController
       id: invitation.id,
       wallet_address: invitation.wallet_address,
       invited_by_member_id: invitation.invited_by_member_id,
+      community_id: invitation.community_id,
+      community_role: invitation.community_role,
       accepted_at: invitation.accepted_at
     }
   end

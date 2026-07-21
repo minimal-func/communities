@@ -33,9 +33,7 @@
         <div class="site-nav-right">
           <% if current_member %>
             <span class="site-nav-address"><%= current_member.wallet_address %></span>
-            <% if current_member.admin? %>
-              <%= link_to "Invite", new_wallet_invitation_path, class: "site-nav-link" %>
-            <% end %>
+  
             <%= button_to "Sign out", session_path, method: :delete, class: "site-nav-button" %>
           <% else %>
             <%= link_to "Sign in", login_path, class: "site-nav-link" %>

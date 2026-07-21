@@ -21,6 +21,10 @@
           <%= form.label :wallet_address, "Wallet Address" %>
           <%= form.text_field :wallet_address, placeholder: "0x...", required: true %>
         </div>
+        <div class="field">
+          <%= form.label :role, "Role" %>
+          <%= form.select :role, [["Member", "member"], ["Admin", "admin"]], selected: "member" %>
+        </div>
         <div class="actions-row">
           <%= form.submit "Add to community" %>
         </div>
@@ -54,6 +58,30 @@
       </table>
     <% else %>
       <p class="empty-state">No members yet.</p>
+    <% end %>
+
+    <% if @pending_invitations.any? %>
+      <div class="panel mt-2">
+        <h2>Pending Invitations</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Wallet</th>
+              <th>Intended Role</th>
+              <th>Invited</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @pending_invitations.each do |invitation| %>
+              <tr>
+                <td><%= invitation.wallet_address %></td>
+                <td><%= invitation.community_role %></td>
+                <td><%= time_tag invitation.created_at, invitation.created_at.to_fs(:short) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     <% end %>
   </section>
 </main>

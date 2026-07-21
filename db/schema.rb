@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_133118) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_21_140820) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -127,13 +127,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_133118) do
   create_table "wallet_invitations", force: :cascade do |t|
     t.datetime "accepted_at"
     t.integer "accepted_member_id"
+    t.integer "community_id"
+    t.string "community_role"
     t.datetime "created_at", null: false
     t.integer "invited_by_member_id", null: false
     t.datetime "updated_at", null: false
     t.string "wallet_address", null: false
     t.index ["accepted_member_id"], name: "index_wallet_invitations_on_accepted_member_id"
+    t.index ["community_id", "wallet_address"], name: "index_wallet_invitations_on_community_and_wallet", unique: true
+    t.index ["community_id"], name: "index_wallet_invitations_on_community_id"
     t.index ["invited_by_member_id"], name: "index_wallet_invitations_on_invited_by_member_id"
-    t.index ["wallet_address"], name: "index_wallet_invitations_on_wallet_address", unique: true
   end
 
   create_table "wallet_login_challenges", force: :cascade do |t|
@@ -160,6 +163,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_133118) do
   add_foreign_key "members", "members", column: "invited_by_member_id"
   add_foreign_key "posts", "community_threads"
   add_foreign_key "posts", "members", column: "author_member_id"
+  add_foreign_key "wallet_invitations", "communities"
   add_foreign_key "wallet_invitations", "members", column: "accepted_member_id"
   add_foreign_key "wallet_invitations", "members", column: "invited_by_member_id"
 end

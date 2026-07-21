@@ -6,7 +6,6 @@ Rails.application.routes.draw do
     post :nonce
   end
 
-  resources :wallet_invitations, only: %i[index new create]
   ActiveAdmin.routes(self)
 
   resources :communities do
