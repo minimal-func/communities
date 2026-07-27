@@ -20,6 +20,15 @@ class CommunityMembersController < ApplicationController
     member = Member.find_by(wallet_address: wallet_address)
 
     if member
+      if @community.banned_member?(member)
+        flash.now[:alert] = "Member is banned from this community."
+        @members = @community.community_members.includes(:member).order(created_at: :desc)
+        @community_member = @community.community_members.build
+        @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
+        render :index, status: :unprocessable_entity
+        return
+      end
+
       if @community.member?(member)
         flash.now[:alert] = "Member is already part of this community."
         @members = @community.community_members.includes(:member).order(created_at: :desc)
@@ -57,11 +66,43 @@ class CommunityMembersController < ApplicationController
 
   def destroy
     @community_member = @community.community_members.find(params[:id])
+
+    if @community_member.role == "admin" && !current_member.admin?
+      redirect_to community_members_path(@community), alert: "Cannot remove another admin."
+      return
+    end
+
     @community_member.destroy!
 
     respond_to do |format|
       format.html { redirect_to community_members_path(@community), notice: "Member removed." }
       format.json { head :no_content }
+    end
+  end
+
+  def ban
+    @community_member = @community.community_members.find(params[:id])
+
+    if @community_member.role == "admin" && !current_member.admin?
+      redirect_to community_members_path(@community), alert: "Cannot ban another admin."
+      return
+    end
+
+    @community_member.update!(banned_at: Time.current, banned_by_member_id: current_member.id)
+
+    respond_to do |format|
+      format.html { redirect_to community_members_path(@community), notice: "Member banned." }
+      format.json { render json: community_member_json(@community_member) }
+    end
+  end
+
+  def unban
+    @community_member = @community.community_members.find(params[:id])
+    @community_member.update!(banned_at: nil, banned_by_member_id: nil)
+
+    respond_to do |format|
+      format.html { redirect_to community_members_path(@community), notice: "Member unbanned." }
+      format.json { render json: community_member_json(@community_member) }
     end
   end
 
@@ -93,6 +134,7 @@ class CommunityMembersController < ApplicationController
       member_id: cm.member_id,
       wallet_address: cm.member.wallet_address,
       role: cm.role,
+      banned_at: cm.banned_at,
       created_at: cm.created_at
     }
   end

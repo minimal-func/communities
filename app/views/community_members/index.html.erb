@@ -37,18 +37,23 @@
           <tr>
             <th>Wallet</th>
             <th>Role</th>
+            <th>Status</th>
             <th>Added</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           <% @members.each do |cm| %>
-            <tr>
+            <tr class="<%= "banned-row" if cm.banned? %>">
               <td><%= cm.member.wallet_address %></td>
               <td><%= cm.role %></td>
+              <td><%= cm.banned? ? "Banned" : "Active" %></td>
               <td><%= time_tag cm.created_at, cm.created_at.to_fs(:short) %></td>
               <td>
-                <% if cm.role != "admin" %>
+                <% if cm.banned? %>
+                  <%= button_to "Unban", unban_community_member_path(@community, cm), method: :post, class: "button button-small" %>
+                <% elsif cm.role != "admin" %>
+                  <%= button_to "Ban", ban_community_member_path(@community, cm), method: :post, data: { turbo_confirm: "Ban this member?" }, class: "button button-small" %>
                   <%= button_to "Remove", community_member_path(@community, cm), method: :delete, data: { turbo_confirm: "Remove this member?" }, class: "button button-danger button-small" %>
                 <% end %>
               </td>

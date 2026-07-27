@@ -10,7 +10,12 @@ Rails.application.routes.draw do
 
   resources :communities do
     resources :threads, controller: :threads, shallow: true
-    resources :members, controller: :community_members, only: %i[index create destroy]
+    resources :members, controller: :community_members, only: %i[index create destroy] do
+      member do
+        post :ban
+        post :unban
+      end
+    end
   end
 
   resources :threads, only: [] do

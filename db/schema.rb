@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_21_140820) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_27_161704) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -73,11 +73,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_21_140820) do
   end
 
   create_table "community_members", force: :cascade do |t|
+    t.datetime "banned_at"
+    t.integer "banned_by_member_id"
     t.integer "community_id", null: false
     t.datetime "created_at", null: false
     t.integer "member_id", null: false
     t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
+    t.index ["banned_at"], name: "index_community_members_on_banned_at"
     t.index ["community_id", "member_id"], name: "index_community_members_on_community_id_and_member_id", unique: true
     t.index ["community_id"], name: "index_community_members_on_community_id"
     t.index ["member_id"], name: "index_community_members_on_member_id"

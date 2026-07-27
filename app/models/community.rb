@@ -11,11 +11,15 @@ class Community < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
 
   def admin?(member)
-    community_members.exists?(member: member, role: "admin")
+    community_members.active.exists?(member: member, role: "admin")
   end
 
   def member?(member)
-    community_members.exists?(member: member)
+    community_members.active.exists?(member: member)
+  end
+
+  def banned_member?(member)
+    community_members.banned.exists?(member: member)
   end
 
   private

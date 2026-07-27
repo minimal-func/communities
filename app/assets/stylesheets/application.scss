@@ -797,6 +797,7 @@ table { border-color: var(--border); border-radius: 12px; background: rgba(3, 7,
 th, td { border-bottom-color: rgba(114, 208, 255, 0.1); padding: 0.9rem 1rem; }
 th { color: var(--accent-yellow); background: rgba(69, 217, 255, 0.06); font-size: 0.7rem; }
 tr:hover td { background: rgba(69, 217, 255, 0.055); }
+.banned-row td { color: var(--text-muted); opacity: 0.6; text-decoration: line-through; }
 
 .site-header { border-bottom-color: rgba(114, 208, 255, 0.17); background: rgba(7, 9, 22, 0.8); }
 .site-nav { width: min(100% - 2.5rem, 74rem); padding: 0.9rem 0; }
