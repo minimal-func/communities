@@ -1,0 +1,56 @@
+<% content_for :title, "Reports" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Reports</span>
+  </div>
+
+  <section>
+    <div class="section-heading">
+      <h1>Reports</h1>
+    </div>
+
+    <% if @reports.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Content preview</th>
+            <th>Reported by</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reports.each do |report| %>
+            <tr>
+              <td><%= report.reportable_type %></td>
+              <td>
+                <%= link_to truncate(strip_tags(report.reportable.body), length: 80),
+                    report.reportable.is_a?(Post) ? post_path(report.reportable) : post_path(report.reportable.post, anchor: dom_id(report.reportable)) %>
+              </td>
+              <td class="text-sm"><%= report.reporter_member.wallet_address %></td>
+              <td class="text-sm"><%= truncate(report.reason, length: 60) %></td>
+              <td class="text-sm"><%= report.status.humanize %></td>
+              <td class="text-sm"><%= time_tag report.created_at, report.created_at.to_fs(:short) %></td>
+              <td>
+                <% if report.pending? %>
+                  <div class="actions-row">
+                    <%= button_to "Resolve", report_path(report, status: :resolved), method: :patch, class: "button button-small" %>
+                    <%= button_to "Dismiss", report_path(report, status: :dismissed), method: :patch, class: "button button-danger button-small" %>
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">No reports yet.</p>
+    <% end %>
+  </section>
+</main>

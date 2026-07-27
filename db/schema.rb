@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_27_161704) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_27_180000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -127,6 +127,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_27_161704) do
     t.index ["visibility"], name: "index_posts_on_visibility"
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.integer "reportable_id", null: false
+    t.string "reportable_type", null: false
+    t.integer "reporter_member_id", null: false
+    t.datetime "resolved_at"
+    t.integer "resolved_by_member_id"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reportable_type", "reportable_id"], name: "index_reports_on_reportable"
+    t.index ["reporter_member_id"], name: "index_reports_on_reporter_member_id"
+    t.index ["resolved_by_member_id"], name: "index_reports_on_resolved_by_member_id"
+    t.index ["status"], name: "index_reports_on_status"
+  end
+
   create_table "wallet_invitations", force: :cascade do |t|
     t.datetime "accepted_at"
     t.integer "accepted_member_id"
@@ -166,6 +182,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_27_161704) do
   add_foreign_key "members", "members", column: "invited_by_member_id"
   add_foreign_key "posts", "community_threads"
   add_foreign_key "posts", "members", column: "author_member_id"
+  add_foreign_key "reports", "members", column: "reporter_member_id"
+  add_foreign_key "reports", "members", column: "resolved_by_member_id"
   add_foreign_key "wallet_invitations", "communities"
   add_foreign_key "wallet_invitations", "members", column: "accepted_member_id"
   add_foreign_key "wallet_invitations", "members", column: "invited_by_member_id"

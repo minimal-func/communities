@@ -2,6 +2,7 @@ class Post < ApplicationRecord
   belongs_to :community_thread
   belongs_to :author_member, class_name: "Member"
   has_many :comments, dependent: :destroy
+  has_many :reports, as: :reportable, dependent: :destroy
 
   validates :body, presence: true
   validates :visibility, presence: true, inclusion: { in: %w[community members public] }

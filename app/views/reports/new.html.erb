@@ -1,0 +1,54 @@
+<% content_for :title, "Report" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", communities_path %>
+    <span class="breadcrumb-sep">/</span>
+    <% if @reportable.is_a?(Post) %>
+      <%= link_to @reportable.community_thread.community.name, @reportable.community_thread.community %>
+      <span class="breadcrumb-sep">/</span>
+      <%= link_to @reportable.community_thread.title, thread_path(@reportable.community_thread) %>
+      <span class="breadcrumb-sep">/</span>
+      <%= link_to "Post", post_path(@reportable) %>
+    <% else %>
+      <%= link_to @reportable.post.community_thread.community.name, @reportable.post.community_thread.community %>
+      <span class="breadcrumb-sep">/</span>
+      <%= link_to @reportable.post.community_thread.title, thread_path(@reportable.post.community_thread) %>
+      <span class="breadcrumb-sep">/</span>
+      <%= link_to "Comment", post_path(@reportable.post, anchor: dom_id(@reportable)) %>
+    <% end %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Report</span>
+  </div>
+
+  <section>
+    <h1>Report <%= @reportable.class.name.downcase %></h1>
+
+    <article class="panel mb-2">
+      <div class="post-body-rendered"><%= render_post_body(@reportable.body) %></div>
+    </article>
+
+    <%= form_with model: [@reportable, @report], class: "panel" do |form| %>
+      <% if @report.errors.any? %>
+        <div id="error_explanation">
+          <p><%= pluralize(@report.errors.count, "error") %> prevented this report from being saved:</p>
+          <ul>
+            <% @report.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="field">
+        <%= form.label :reason, "Why are you reporting this?" %>
+        <%= form.text_area :reason, rows: 5, placeholder: "Explain why this content violates the rules...", required: true %>
+      </div>
+
+      <div class="actions-row">
+        <%= form.submit "Submit Report", class: "button-danger" %>
+        <%= link_to "Cancel", @reportable.is_a?(Post) ? post_path(@reportable) : post_path(@reportable.post), class: "button button-secondary" %>
+      </div>
+    <% end %>
+  </section>
+</main>

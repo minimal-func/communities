@@ -5,6 +5,9 @@
     <% if current_member && (comment.author_member == current_member || current_member.admin?) %>
       <%= button_to "Delete", comment_path(comment), method: :delete, class: "button button-danger button-small", data: { turbo_confirm: "Delete this comment?" } %>
     <% end %>
+    <% if current_member %>
+      <%= link_to "Report", new_comment_report_path(comment), class: "button button-danger button-small" %>
+    <% end %>
   </p>
   <div class="post-body-rendered"><%= render_post_body(comment.body) %></div>
 </article>

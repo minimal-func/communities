@@ -19,10 +19,16 @@ Rails.application.routes.draw do
   end
 
   resources :threads, only: [] do
-    resources :posts, shallow: true
+    resources :posts, shallow: true do
+      resources :reports, only: %i[new create]
+    end
   end
 
-  resources :comments
+  resources :comments do
+    resources :reports, only: %i[new create]
+  end
+
+  resources :reports, only: %i[index update]
 
   resources :images, only: [:create]
 

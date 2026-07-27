@@ -27,6 +27,7 @@
     <div class="actions-row mt-2">
       <%= link_to "Edit", edit_post_path(@post), class: "button button-secondary" %>
       <%= button_to "Delete", @post, method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this post?" } %>
+      <%= link_to "Report", new_post_report_path(@post), class: "button button-danger button-secondary" %>
     </div>
   </section>
 
