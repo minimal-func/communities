@@ -178,6 +178,176 @@ class CommunityMembersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "member", response.parsed_body.fetch("community_role")
   end
 
+  test "bans a member" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member")
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post ban_community_member_path(community, community_member)
+
+    assert_redirected_to community_members_path(community)
+    assert_equal "Member banned.", flash[:notice]
+    assert community_member.reload.banned?
+    assert_equal admin.id, community_member.reload.banned_by_member_id
+  end
+
+  test "bans a member via JSON" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member")
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post ban_community_member_path(community, community_member), as: :json
+
+    assert_response :success
+    assert_not_nil response.parsed_body["banned_at"]
+  end
+
+  test "does not allow non-admin to ban" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member")
+
+    sign_in_with_wallet(member, member_key)
+
+    post ban_community_member_path(community, community_member)
+
+    assert_redirected_to community_path(community)
+    assert_not community_member.reload.banned?
+  end
+
+  test "does not allow banning another admin" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    other_admin_key = ethereum_private_key
+    other_admin = Member.create!(wallet_address: ethereum_address(other_admin_key))
+    other_community_member = community.community_members.create!(member: other_admin, role: "admin")
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post ban_community_member_path(community, other_community_member)
+
+    assert_redirected_to community_members_path(community)
+    assert_equal "Cannot ban another admin.", flash[:alert]
+    assert_not other_community_member.reload.banned?
+  end
+
+  test "allows global admin to ban another admin" do
+    global_admin_key = ethereum_private_key
+    global_admin = Member.create!(wallet_address: ethereum_address(global_admin_key), admin: true)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: global_admin)
+    community.community_members.create!(member: global_admin, role: "admin")
+
+    other_admin_key = ethereum_private_key
+    other_admin = Member.create!(wallet_address: ethereum_address(other_admin_key))
+    other_community_member = community.community_members.create!(member: other_admin, role: "admin")
+
+    sign_in_with_wallet(global_admin, global_admin_key)
+
+    post ban_community_member_path(community, other_community_member)
+
+    assert_redirected_to community_members_path(community)
+    assert_equal "Member banned.", flash[:notice]
+    assert other_community_member.reload.banned?
+  end
+
+  test "unbans a member" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member", banned_at: Time.current, banned_by_member: admin)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post unban_community_member_path(community, community_member)
+
+    assert_redirected_to community_members_path(community)
+    assert_equal "Member unbanned.", flash[:notice]
+    assert_nil community_member.reload.banned_at
+    assert_nil community_member.reload.banned_by_member_id
+  end
+
+  test "unbans a member via JSON" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member", banned_at: Time.current, banned_by_member: admin)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post unban_community_member_path(community, community_member), as: :json
+
+    assert_response :success
+    assert_nil response.parsed_body["banned_at"]
+  end
+
+  test "does not allow non-admin to unban" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community_member = community.community_members.create!(member: member, role: "member", banned_at: Time.current, banned_by_member: admin)
+
+    sign_in_with_wallet(member, member_key)
+
+    post unban_community_member_path(community, community_member)
+
+    assert_redirected_to community_path(community)
+    assert community_member.reload.banned?
+  end
+
+  test "does not add a banned member" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    community.community_members.create!(member: member, role: "member", banned_at: Time.current, banned_by_member: admin)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    assert_no_difference "community.community_members.count" do
+      post community_members_path(community), params: { wallet_address: member.wallet_address }
+    end
+
+    assert_response :unprocessable_entity
+    assert_select ".alert", /Member is banned/
+  end
+
   private
 
   def sign_in_with_wallet(member, private_key)

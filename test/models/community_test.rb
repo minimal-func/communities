@@ -58,4 +58,48 @@ class CommunityTest < ActiveSupport::TestCase
 
     assert_not community.member?(other)
   end
+
+  test "banned_member? returns true for banned members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: member, role: "member", banned_at: Time.current)
+
+    assert community.banned_member?(member)
+  end
+
+  test "banned_member? returns false for active members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: member, role: "member")
+
+    assert_not community.banned_member?(member)
+  end
+
+  test "banned_member? returns false for non-members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    other = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+
+    assert_not community.banned_member?(other)
+  end
+
+  test "member? returns false for banned members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: member, role: "member", banned_at: Time.current)
+
+    assert_not community.member?(member)
+  end
+
+  test "admin? returns false for banned admins" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: member, role: "admin", banned_at: Time.current)
+
+    assert_not community.admin?(member)
+  end
 end
