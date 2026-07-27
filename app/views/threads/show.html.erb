@@ -27,7 +27,7 @@
     <div class="actions-row mt-2">
       <%= link_to "New Post", new_thread_post_path(@thread), class: "button" %>
       <%= link_to "Edit", edit_thread_path(@thread), class: "button button-secondary" %>
-        <%= button_to "Delete", thread_path(@thread), method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this thread?" } %>
+      <%= button_to "Delete", thread_path(@thread), method: :delete, class: "button button-danger", data: { turbo_confirm: "Delete this thread?" } %>
     </div>
   </section>
 
