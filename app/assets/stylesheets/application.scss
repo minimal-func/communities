@@ -301,6 +301,21 @@ pre {
   margin: 0;
 }
 
+.support-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  color: #03060e;
+  border-radius: 6px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--accent-yellow);
+}
+
+.support-link:hover { color: #03060e; background: var(--accent); }
+
 .wallet-card {
   display: grid;
   gap: 1rem;
