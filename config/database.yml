@@ -26,3 +26,7 @@ production:
     <<: *default
     database: communities_production_cable
     migrations_paths: db/cable_migrate
+  queue:
+    <<: *default
+    database: communities_production_queue
+    migrations_paths: db/queue_migrate
