@@ -268,65 +268,165 @@ pre {
 /* ─── login page ────────────────────────────────────────── */
 
 .login-shell {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  min-height: 100vh;
+  min-height: calc(100vh - 4.5rem);
   place-items: center;
-  padding: 2rem;
+  width: 100%;
+  overflow: hidden;
+  padding: clamp(2rem, 6vw, 5rem) 2rem;
+}
+
+.login-shell::before,
+.login-shell::after {
+  position: absolute;
+  z-index: -1;
+  width: clamp(17rem, 35vw, 32rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  content: "";
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.login-shell::before {
+  top: -15%;
+  left: -12%;
+  background: radial-gradient(circle, rgba(69, 217, 255, 0.14), transparent 68%);
+}
+
+.login-shell::after {
+  right: -14%;
+  bottom: -24%;
+  background: radial-gradient(circle, rgba(89, 232, 176, 0.1), transparent 68%);
 }
 
 .login-panel {
   display: grid;
-  width: min(100%, 56rem);
-  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
-  gap: 2rem;
-  align-items: center;
+  width: min(100%, 66rem);
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 27rem);
+  gap: clamp(2.5rem, 7vw, 6rem);
+  align-items: stretch;
   border: none;
   padding: 0;
   background: none;
 }
 
-.login-copy { min-width: 0; }
+.login-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(0.25rem, 2vw, 1rem) 0;
+}
 
 .login-kicker {
-  margin: 0 0 0.35rem;
-  color: var(--accent-yellow);
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0 0 0.75rem;
+  color: var(--accent);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
+.login-kicker span {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 5px rgba(89, 232, 176, 0.11), 0 0 14px rgba(89, 232, 176, 0.8);
+}
+
+.login-copy h1 {
+  max-width: 8ch;
+  margin-bottom: 1rem;
+  font-size: clamp(2.45rem, 5vw, 4.5rem);
+  letter-spacing: -0.055em;
+}
+
 .login-summary {
-  max-width: 34rem;
+  max-width: 31rem;
   margin: 0;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.login-highlights {
+  display: grid;
+  gap: 0.65rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.025em;
+  list-style: none;
+}
+
+.login-highlights li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.login-highlights span {
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
 }
 
 .support-link {
   display: inline-flex;
-  margin-top: 1rem;
-  color: #03060e;
-  border-radius: 6px;
-  padding: 0.55rem 0.8rem;
+  align-self: flex-start;
+  margin-top: 2rem;
+  padding: 0;
+  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: var(--accent-yellow);
+  background: none;
 }
 
-.support-link:hover { color: #03060e; background: var(--accent); }
+.support-link:hover { color: var(--accent); }
 
 .wallet-card {
   display: grid;
-  gap: 1rem;
+  align-content: center;
+  gap: 1.25rem;
   min-width: 0;
 }
+
+.wallet-card-heading h2 {
+  margin-bottom: 0.45rem;
+  font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+  letter-spacing: -0.03em;
+}
+
+.wallet-card-copy {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.wallet-identity {
+  border: 1px solid rgba(114, 208, 255, 0.16);
+  border-radius: 9px;
+  padding: 0.9rem 1rem;
+  background: rgba(3, 7, 20, 0.32);
+}
+
+.wallet-identity .wallet-label { margin-bottom: 0.35rem; }
 
 /* ─── provider selector ─────────────────────────────────── */
 
 .provider-selector {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.5rem;
   border: none;
   margin: 0;
   padding: 0;
@@ -378,6 +478,15 @@ pre {
 
 .login-status { min-height: 1.5rem; margin: 0; color: var(--green); }
 .login-status[data-tone="error"] { color: var(--red); }
+
+.login-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.login-actions > * { width: 100%; }
+.login-actions form { display: contents; }
 
 /* ─── invitations ───────────────────────────────────────── */
 
@@ -601,6 +710,8 @@ pre {
   }
 
   .provider-button { min-height: 2.4rem; font-size: 0.68rem; }
+
+  .login-actions { grid-template-columns: 1fr; }
 
   .flash-stack {
     top: auto;
