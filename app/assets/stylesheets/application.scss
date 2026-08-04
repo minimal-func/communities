@@ -613,6 +613,224 @@ pre {
   .site-nav-address { display: none; }
 }
 
+/* ─── solarpunk landing direction ───────────────────────── */
+
+.landing-page {
+  position: relative;
+  isolation: isolate;
+  --landing-leaf: #b9db61;
+  --landing-gold: #f7c85f;
+  --landing-earth: #d88353;
+  --landing-sky: #8fd9d1;
+}
+
+.landing-page::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  background:
+    radial-gradient(circle at 85% 17%, rgba(247, 200, 95, 0.18), transparent 20rem),
+    radial-gradient(circle at 13% 67%, rgba(185, 219, 97, 0.1), transparent 28rem);
+}
+
+.landing-eyebrow,
+.principle-number,
+.landing-steps span { color: var(--landing-leaf); }
+
+.landing-hero h1 {
+  color: #f5f0df;
+  text-shadow: 0 3px 20px rgba(247, 200, 95, 0.08);
+}
+
+.landing-actions .button {
+  color: #173018;
+  background: linear-gradient(135deg, var(--landing-gold), #ecd678 48%, var(--landing-leaf));
+  box-shadow: 0 6px 17px rgba(185, 219, 97, 0.18);
+}
+
+.landing-orbit {
+  background:
+    radial-gradient(circle, rgba(247, 200, 95, 0.28) 0 6%, rgba(185, 219, 97, 0.1) 32%, transparent 66%),
+    conic-gradient(from 40deg, transparent, rgba(143, 217, 209, 0.16), transparent, rgba(185, 219, 97, 0.14), transparent);
+}
+
+.orbit-ring { border-color: rgba(185, 219, 97, 0.4); }
+.orbit-ring-two { border-color: rgba(247, 200, 95, 0.48); }
+.orbit-core { border-color: rgba(247, 200, 95, 0.7); background: rgba(22, 38, 27, 0.83); box-shadow: 0 0 45px rgba(185, 219, 97, 0.22), inset 0 0 22px rgba(247, 200, 95, 0.1); }
+.orbit-mark { color: var(--landing-gold); }
+.orbit-dot-one { color: var(--landing-gold); background: var(--landing-gold); }
+.orbit-dot-two { color: var(--landing-earth); background: var(--landing-earth); }
+.orbit-dot-three { color: var(--landing-leaf); background: var(--landing-leaf); }
+
+.landing-principles { border-color: rgba(185, 219, 97, 0.23); background: rgba(185, 219, 97, 0.23); }
+.landing-principles article { background: rgba(15, 28, 25, 0.86); }
+.landing-steps li { border-color: rgba(185, 219, 97, 0.25); }
+.landing-steps li:last-child { border-bottom-color: rgba(185, 219, 97, 0.25); }
+
+/* ─── public landing page ───────────────────────────────── */
+
+.landing-page {
+  display: grid;
+  gap: clamp(3rem, 8vw, 7rem);
+  padding-top: clamp(3.5rem, 9vw, 8rem);
+  padding-bottom: clamp(3.5rem, 8vw, 6rem);
+}
+
+.landing-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+  align-items: center;
+  min-height: 30rem;
+  gap: clamp(2rem, 6vw, 6rem);
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.landing-copy { position: relative; z-index: 1; }
+
+.landing-eyebrow {
+  margin: 0 0 1.15rem;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.landing-hero h1 {
+  max-width: 12ch;
+  margin-bottom: 1.3rem;
+  font-size: clamp(2.7rem, 5.6vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  text-transform: none;
+}
+
+.landing-lede {
+  max-width: 35rem;
+  margin: 0;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.75;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.landing-actions .button { min-width: 12.75rem; }
+
+.landing-text-link {
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.landing-text-link span { color: var(--accent); margin-left: 0.25rem; }
+.landing-note { margin: 1.15rem 0 0; font-size: 0.76rem; }
+
+.landing-orbit {
+  position: relative;
+  width: min(100%, 29rem);
+  aspect-ratio: 1;
+  justify-self: end;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(69, 217, 255, 0.17) 0, rgba(69, 217, 255, 0.035) 34%, transparent 65%);
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid rgba(69, 217, 255, 0.23);
+  border-radius: 50%;
+}
+
+.orbit-ring-one { transform: rotateX(66deg) rotateZ(25deg); }
+.orbit-ring-two { inset: 18%; border-color: rgba(243, 106, 216, 0.32); transform: rotateY(66deg) rotateZ(-30deg); }
+
+.orbit-core {
+  position: absolute;
+  inset: 34%;
+  display: grid;
+  place-content: center;
+  border: 1px solid rgba(89, 232, 176, 0.72);
+  border-radius: 50%;
+  text-align: center;
+  background: rgba(7, 14, 31, 0.78);
+  box-shadow: 0 0 45px rgba(69, 217, 255, 0.3), inset 0 0 22px rgba(69, 217, 255, 0.12);
+}
+
+.orbit-mark { color: var(--accent); font-size: clamp(2rem, 5vw, 3.7rem); font-weight: 800; line-height: 1; }
+.orbit-label { margin-top: 0.4rem; color: var(--text-muted); font-size: 0.63rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+.orbit-dot { position: absolute; width: 0.62rem; height: 0.62rem; border-radius: 50%; background: var(--accent-yellow); box-shadow: 0 0 16px currentColor; }
+.orbit-dot-one { top: 14%; right: 17%; color: var(--accent-yellow); }
+.orbit-dot-two { bottom: 20%; left: 9%; color: var(--accent-pink); background: var(--accent-pink); }
+.orbit-dot-three { top: 47%; left: 3%; color: var(--green); background: var(--green); }
+
+.landing-principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0;
+  background: var(--border);
+}
+
+.landing-principles article {
+  min-height: 15rem;
+  border: 0;
+  border-radius: 0;
+  padding: clamp(1.3rem, 2.5vw, 2.25rem);
+  background: rgba(10, 15, 31, 0.86);
+  box-shadow: none;
+}
+
+.principle-number { color: var(--accent); font-size: 0.72rem; font-weight: 750; letter-spacing: 0.1em; }
+.landing-principles h2 { margin: 2.6rem 0 0.7rem; font-size: 1.1rem; letter-spacing: -0.02em; text-transform: none; }
+.landing-principles p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
+
+.landing-how {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(20rem, 1.2fr);
+  align-items: start;
+  gap: 4rem;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.landing-how h2 { max-width: 15ch; font-size: clamp(1.8rem, 3.5vw, 3rem); letter-spacing: -0.045em; text-transform: none; }
+.landing-steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; counter-reset: landing-step; }
+.landing-steps li { display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; padding: 1.15rem 0; border-top: 1px solid var(--border); }
+.landing-steps li:last-child { border-bottom: 1px solid var(--border); }
+.landing-steps span { color: var(--accent); font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; }
+.landing-steps p { margin: 0; color: var(--text); font-size: 1rem; }
+
+@media (max-width: 760px) {
+  .landing-page { gap: 3.5rem; padding-top: 3rem; }
+  .landing-hero { grid-template-columns: 1fr; min-height: 0; }
+  .landing-orbit { width: min(78vw, 23rem); justify-self: center; order: -1; }
+  .landing-hero h1 { font-size: clamp(2.6rem, 12vw, 4.4rem); }
+  .landing-principles { grid-template-columns: 1fr; }
+  .landing-principles article { min-height: 0; }
+  .landing-principles h2 { margin-top: 1.3rem; }
+  .landing-how { grid-template-columns: 1fr; gap: 2rem; }
+}
+
 @import "editor";
 
 /* ─── cyberpunk visual language ─────────────────────────── */

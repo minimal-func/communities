@@ -28,7 +28,7 @@
     <header class="site-header">
       <nav class="site-nav">
         <div class="site-nav-left">
-          <%= link_to "Communities", communities_path, class: "site-nav-brand" %>
+          <%= link_to "Communities", current_member ? communities_path : root_path, class: "site-nav-brand" %>
         </div>
         <div class="site-nav-right">
           <% if current_member %>

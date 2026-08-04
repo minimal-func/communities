@@ -1,0 +1,60 @@
+<% content_for :title, "Communities — A lighter way to gather" %>
+
+<main class="landing-page">
+  <section class="landing-hero" aria-labelledby="landing-title">
+    <div class="landing-copy">
+      <p class="landing-eyebrow">A solarpunk commons</p>
+      <h1 id="landing-title">Build a culture of enough.</h1>
+      <p class="landing-lede">Communities is a small, living space for people choosing stewardship over consumption: sharing practical knowledge, tending local projects, and learning how to live well within planetary limits.</p>
+
+      <div class="landing-actions">
+        <%= link_to "Enter your community", login_path, class: "button" %>
+        <a class="landing-text-link" href="#how-it-works">How we gather <span aria-hidden="true">↓</span></a>
+      </div>
+
+      <p class="landing-note">Small, trusted circles make room for care. Access is for invited wallet holders.</p>
+    </div>
+
+    <div class="landing-orbit" aria-hidden="true">
+      <div class="orbit-ring orbit-ring-one"></div>
+      <div class="orbit-ring orbit-ring-two"></div>
+      <div class="orbit-core">
+        <span class="orbit-mark">✦</span>
+        <span class="orbit-label">Tend &amp; repair</span>
+      </div>
+      <span class="orbit-dot orbit-dot-one"></span>
+      <span class="orbit-dot orbit-dot-two"></span>
+      <span class="orbit-dot orbit-dot-three"></span>
+    </div>
+  </section>
+
+  <section class="landing-principles" aria-label="Principles of our commons">
+    <article>
+      <span class="principle-number">01</span>
+      <h2>Care within limits</h2>
+      <p>Make space for the habits, tools, and decisions that reduce harm and support long-term resilience.</p>
+    </article>
+    <article>
+      <span class="principle-number">02</span>
+      <h2>Repair, reuse, remember</h2>
+      <p>Pass along hard-won knowledge. Value maintenance, reuse, and the stories that keep good things going.</p>
+    </article>
+    <article>
+      <span class="principle-number">03</span>
+      <h2>Keep power local</h2>
+      <p>Build trust close to home. Portable wallet membership keeps your place in the network in your own hands.</p>
+    </article>
+  </section>
+
+  <section id="how-it-works" class="landing-how" aria-labelledby="how-title">
+    <div>
+      <p class="landing-eyebrow">From intention to practice</p>
+      <h2 id="how-title">A digital clearing for lower-impact living.</h2>
+    </div>
+    <ol class="landing-steps">
+      <li><span>01</span><p>Receive an invitation from someone already tending the commons.</p></li>
+      <li><span>02</span><p>Connect the wallet attached to your invitation.</p></li>
+      <li><span>03</span><p>Bring your curiosity, your knowledge, and the practices you want to sustain.</p></li>
+    </ol>
+  </section>
+</main>
