@@ -16,5 +16,6 @@ class LoginPageTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Build a culture of enough."
     assert_select "a[href='#{login_path}']", "Enter your community"
+    assert_select "a.support-link[href='https://buymeacoffee.com/ildar.safin'][target='_blank'][rel='noopener']", "Buy me a coffee"
   end
 end

@@ -931,6 +931,50 @@ pre {
 .landing-steps span { color: var(--accent); font-size: 0.75rem; font-weight: 750; letter-spacing: 0.08em; }
 .landing-steps p { margin: 0; color: var(--text); font-size: 1rem; }
 
+.landing-section-heading { max-width: 36rem; }
+.landing-section-heading h2 { margin: 0; font-size: clamp(1.8rem, 3.5vw, 3rem); letter-spacing: -0.045em; text-transform: none; }
+
+.landing-features { display: grid; gap: 2rem; border: 0; padding: 0; background: transparent; box-shadow: none; }
+
+.landing-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--border);
+}
+
+.landing-feature-grid article {
+  min-height: 11rem;
+  border: 0;
+  border-radius: 0;
+  padding: clamp(1.3rem, 2.5vw, 2rem);
+  background: rgba(10, 15, 31, 0.86);
+  box-shadow: none;
+}
+
+.landing-feature-grid h3 { margin: 0 0 0.7rem; font-size: 1rem; text-transform: none; }
+.landing-feature-grid p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
+
+.landing-membership { display: grid; gap: 2rem; border: 0; padding: 0; background: transparent; box-shadow: none; }
+
+.landing-membership-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(20rem, 1.2fr);
+  align-items: start;
+  gap: 4rem;
+}
+
+.landing-membership-intro { margin: 0; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.75; }
+
+.landing-facts { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.landing-facts li { padding: 1.15rem 0; border-top: 1px solid var(--border); }
+.landing-facts li:last-child { border-bottom: 1px solid var(--border); }
+.landing-facts h3 { margin: 0 0 0.4rem; font-size: 1rem; text-transform: none; }
+.landing-facts p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
+
 @media (max-width: 760px) {
   .landing-page { gap: 3.5rem; padding-top: 3rem; }
   .landing-hero { grid-template-columns: 1fr; min-height: 0; }
@@ -940,6 +984,8 @@ pre {
   .landing-principles article { min-height: 0; }
   .landing-principles h2 { margin-top: 1.3rem; }
   .landing-how { grid-template-columns: 1fr; gap: 2rem; }
+  .landing-feature-grid { grid-template-columns: 1fr; }
+  .landing-membership-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 
 @import "editor";

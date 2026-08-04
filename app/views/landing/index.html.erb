@@ -9,10 +9,12 @@
 
       <div class="landing-actions">
         <%= link_to "Enter your community", login_path, class: "button" %>
-        <a class="landing-text-link" href="#how-it-works">How we gather <span aria-hidden="true">↓</span></a>
+        <a class="landing-text-link" href="#whats-inside">What’s inside <span aria-hidden="true">↓</span></a>
       </div>
 
       <p class="landing-note">Small, trusted circles make room for care. Access is for invited wallet holders.</p>
+
+      <%= link_to "Buy me a coffee", "https://buymeacoffee.com/ildar.safin", class: "support-link", target: "_blank", rel: "noopener" %>
     </div>
 
     <div class="landing-orbit" aria-hidden="true">
@@ -46,6 +48,32 @@
     </article>
   </section>
 
+  <section id="whats-inside" class="landing-features" aria-labelledby="features-title">
+    <div class="landing-section-heading">
+      <p class="landing-eyebrow">What’s inside</p>
+      <h2 id="features-title">A workspace for shared practice.</h2>
+    </div>
+
+    <div class="landing-feature-grid">
+      <article>
+        <h3>Private communities</h3>
+        <p>Each circle is its own space with its own members and topics — no shouting into the void, no audience to perform for.</p>
+      </article>
+      <article>
+        <h3>Threads &amp; rich posts</h3>
+        <p>Share long-form notes, field guides, and project write-ups with the people who will actually use them.</p>
+      </article>
+      <article>
+        <h3>Conversations that repair</h3>
+        <p>Comment on what matters. Ask questions, offer fixes, and keep hard-won knowledge moving between neighbors.</p>
+      </article>
+      <article>
+        <h3>Community-led moderation</h3>
+        <p>Members flag what doesn’t fit, and each circle decides how to keep its own space in good repair.</p>
+      </article>
+    </div>
+  </section>
+
   <section id="how-it-works" class="landing-how" aria-labelledby="how-title">
     <div>
       <p class="landing-eyebrow">From intention to practice</p>
@@ -56,5 +84,31 @@
       <li><span>02</span><p>Connect the wallet attached to your invitation.</p></li>
       <li><span>03</span><p>Bring your curiosity, your knowledge, and the practices you want to sustain.</p></li>
     </ol>
+  </section>
+
+  <section class="landing-membership" aria-labelledby="membership-title">
+    <div class="landing-section-heading">
+      <p class="landing-eyebrow">Ownership</p>
+      <h2 id="membership-title">Membership that travels with you.</h2>
+    </div>
+
+    <div class="landing-membership-grid">
+      <p class="landing-membership-intro">There’s no username to forget and no password to lose. Your place in every community is tied to the Ethereum wallet you already carry.</p>
+
+      <ul class="landing-facts">
+        <li>
+          <h3>Invited, not scraped</h3>
+          <p>Circles grow by invitation, so every member arrives with a reason to be there and a person who vouches for them.</p>
+        </li>
+        <li>
+          <h3>Portable identity</h3>
+          <p>Sign in with your wallet from any device — your memberships and your standing come with you.</p>
+        </li>
+        <li>
+          <h3>No ad-funded attention</h3>
+          <p>The commons isn’t optimized to keep you scrolling. It exists to help you tend what you actually care about.</p>
+        </li>
+      </ul>
+    </div>
   </section>
 </main>
