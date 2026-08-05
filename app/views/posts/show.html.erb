@@ -39,7 +39,7 @@
     <h2 id="comments-title">Comments</h2>
 
     <% if @comments.any? %>
-      <%= render partial: "comments/comment", collection: @comments %>
+      <%= render partial: "comments/comment", collection: @comments, locals: { depth: 1 } %>
     <% else %>
       <p class="empty-state">No comments yet.</p>
     <% end %>

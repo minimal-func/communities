@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
   before_action :require_membership_community, only: %i[create]
 
   def index
-    render json: Comment.order(created_at: :desc).map { |comment| comment_json(comment) }
+    render json: Comment.where(parent_comment_id: nil).map { |comment| comment_json(comment) }
   end
 
   def show
@@ -66,7 +66,7 @@ class CommentsController < ApplicationController
 
   def comment_params
     raw_params = (params[:comment] || params)
-    permitted_params = raw_params.except(:body_json).permit(:post_id, :body).to_h
+    permitted_params = raw_params.except(:body_json).permit(:post_id, :body, :parent_comment_id).to_h
 
     if raw_params.key?(:body_json)
       permitted_params[:body_json] = normalize_parameter_value(raw_params[:body_json])
@@ -90,11 +90,14 @@ class CommentsController < ApplicationController
     {
       id: comment.id,
       post_id: comment.post_id,
+      parent_comment_id: comment.parent_comment_id,
+      depth: comment.depth,
       author_member_id: comment.author_member_id,
       body: comment.body,
       body_json: comment.body_json,
       created_at: comment.created_at,
-      updated_at: comment.updated_at
+      updated_at: comment.updated_at,
+      replies: comment.replies.map { |reply| comment_json(reply) }
     }
   end
 end

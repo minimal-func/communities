@@ -20,10 +20,35 @@ export default class extends Controller {
   static values = {
     placeholder: { type: String, default: "Start typing..." },
     legacy: { type: String, default: "" },
+    defer: { type: Boolean, default: false },
   }
 
   connect() {
     this.holderTarget.innerHTML = ""
+
+    if (this.deferValue) {
+      this.whenVisible(() => this.initEditor())
+    } else {
+      this.initEditor()
+    }
+  }
+
+  whenVisible(callback) {
+    if (this.holderTarget.offsetParent !== null) {
+      callback()
+      return
+    }
+
+    this.visibilityObserver = new MutationObserver(() => {
+      if (this.holderTarget.offsetParent !== null) {
+        this.visibilityObserver.disconnect()
+        callback()
+      }
+    })
+    this.visibilityObserver.observe(this.holderTarget, { attributes: true, subtree: true, childList: true })
+  }
+
+  initEditor() {
     this.editor = new EditorJS({
       holder: this.holderTarget,
       data: this.initialData(),
@@ -35,6 +60,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.visibilityObserver?.disconnect()
     this.editor?.destroy()
     this.editor = null
   }

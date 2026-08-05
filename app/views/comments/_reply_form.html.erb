@@ -1,0 +1,17 @@
+<%= form_with model: Comment.new, url: comments_path, local: true, class: "comment-reply-form" do |form| %>
+  <%= form.hidden_field :post_id, value: @post.slug %>
+  <%= form.hidden_field :parent_comment_id, value: comment.id %>
+
+  <div
+    data-controller="editorjs"
+    data-editorjs-placeholder-value="Write a reply..."
+    data-editorjs-defer-value="true"
+    class="editor-shell"
+  >
+    <%= form.label :body_json, "Reply to #{comment.author_member.wallet_address}", class: "field-label" %>
+    <div data-editorjs-target="holder" class="editorjs-holder"></div>
+    <%= form.hidden_field :body_json, data: { editorjs_target: "input" } %>
+  </div>
+
+  <%= form.submit "Post Reply" %>
+<% end %>

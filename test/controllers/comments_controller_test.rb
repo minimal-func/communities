@@ -124,6 +124,65 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
+  test "member can reply to a comment" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "First!", author_member: member)
+    comment = post_record.comments.create!(body: "Nice!", author_member: member)
+    sign_in_with_wallet(member, private_key)
+
+    assert_difference "Comment.count", 1 do
+      post comments_path, params: { post_id: post_record.slug, body: "I agree", parent_comment_id: comment.id }, as: :json
+    end
+
+    assert_response :created
+    reply = Comment.find(response.parsed_body.fetch("id"))
+    assert_equal comment, reply.parent_comment
+    assert_equal "I agree", reply.body
+    assert_equal 2, response.parsed_body.fetch("depth")
+  end
+
+  test "rejects a reply deeper than 5 levels" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "First!", author_member: member)
+    comment = post_record.comments.create!(body: "Level 1", author_member: member)
+    4.times { comment = comment.replies.create!(body: "Deeper", author_member: member) }
+    sign_in_with_wallet(member, private_key)
+
+    assert_no_difference "Comment.count" do
+      post comments_path, params: { post_id: post_record.slug, body: "Too deep", parent_comment_id: comment.id }, as: :json
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "index returns nested replies under top-level comments" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "First!", author_member: member)
+    comment = post_record.comments.create!(body: "Nice!", author_member: member)
+    comment.replies.create!(body: "Reply", author_member: member)
+    sign_in_with_wallet(member, private_key)
+
+    get comments_path, headers: { "Accept" => "application/json" }
+
+    assert_response :success
+    body = response.parsed_body
+    assert_kind_of Array, body
+    assert_equal 1, body.length
+    assert_equal 1, body.first.fetch("replies").length
+    assert_equal "Reply", body.first.fetch("replies").first.fetch("body")
+  end
+
   private
 
   def sign_in_with_wallet(member, private_key)

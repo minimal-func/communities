@@ -17,7 +17,7 @@ class PostsController < ApplicationController
   end
 
   def show
-    @comments = @post.comments.includes(:author_member)
+    @comments = Comment.build_tree_for(@post)
 
     respond_to do |format|
       format.html

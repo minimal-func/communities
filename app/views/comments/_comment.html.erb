@@ -1,4 +1,4 @@
-<article class="panel post-card mb-1" id="<%= dom_id(comment) %>">
+<article class="panel post-card mb-1 comment comment-depth-<%= depth %>" id="<%= dom_id(comment) %>">
   <p class="meta-line">
     <%= comment.author_member.wallet_address %>
     &middot; <%= time_tag comment.created_at, comment.created_at.to_fs(:short) %>
@@ -10,4 +10,17 @@
     <% end %>
   </p>
   <div class="post-body-rendered"><%= render_rich_content(comment.body_json, comment.body) %></div>
+
+  <% if current_member && comment.can_have_replies? %>
+    <details class="comment-reply-toggle">
+      <summary>Reply</summary>
+      <%= render "comments/reply_form", comment: comment, depth: depth %>
+    </details>
+  <% end %>
+
+  <% if comment.replies.any? %>
+    <div class="comment-replies">
+      <%= render partial: "comments/comment", collection: comment.replies, locals: { depth: depth + 1 } %>
+    </div>
+  <% end %>
 </article>
