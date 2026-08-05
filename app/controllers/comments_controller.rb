@@ -12,7 +12,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    comment = current_member.comments.new(comment_params)
+    comment = current_member.comments.new(comment_params.except(:post_id).merge(post: @post))
 
     if comment.save
       respond_to do |format|
@@ -51,7 +51,7 @@ class CommentsController < ApplicationController
   end
 
   def set_post
-    @post = Post.find(comment_params[:post_id])
+    @post = Post.find_by!(slug: comment_params[:post_id])
   end
 
   def comment_params

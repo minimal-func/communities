@@ -109,7 +109,7 @@ class CommunityMembersController < ApplicationController
   private
 
   def set_community
-    @community = Community.find(params[:community_id])
+    @community = Community.find_by!(slug: params[:community_id])
   end
 
   def require_community_admin

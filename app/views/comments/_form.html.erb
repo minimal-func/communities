@@ -1,5 +1,5 @@
 <%= form_with model: Comment.new, url: comments_path, local: true do |form| %>
-  <%= form.hidden_field :post_id, value: @post.id %>
+  <%= form.hidden_field :post_id, value: @post.slug %>
 
   <div
     data-controller="rich-text-editor"

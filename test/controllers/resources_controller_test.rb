@@ -44,7 +44,7 @@ class ResourcesControllerTest < ActionDispatch::IntegrationTest
     assert_equal member, post_record.author_member
 
     post comments_path, params: {
-      post_id: post_record.id,
+      post_id: post_record.slug,
       body: "Welcome."
     }, as: :json
 

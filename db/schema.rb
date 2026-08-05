@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_27_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_05_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,9 +94,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_27_180000) do
     t.text "body"
     t.integer "community_id", null: false
     t.datetime "created_at", null: false
+    t.string "slug", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["author_member_id"], name: "index_community_threads_on_author_member_id"
+    t.index ["community_id", "slug"], name: "index_community_threads_on_community_id_and_slug", unique: true
     t.index ["community_id"], name: "index_community_threads_on_community_id"
   end
 
@@ -123,9 +125,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_27_180000) do
     t.text "body", null: false
     t.integer "community_thread_id", null: false
     t.datetime "created_at", null: false
+    t.string "slug", null: false
     t.datetime "updated_at", null: false
     t.string "visibility", default: "members", null: false
     t.index ["author_member_id"], name: "index_posts_on_author_member_id"
+    t.index ["community_thread_id", "slug"], name: "index_posts_on_community_thread_id_and_slug", unique: true
     t.index ["community_thread_id"], name: "index_posts_on_community_thread_id"
     t.index ["visibility"], name: "index_posts_on_visibility"
   end

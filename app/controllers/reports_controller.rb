@@ -39,7 +39,7 @@ class ReportsController < ApplicationController
 
   def set_reportable
     if params[:post_id]
-      @reportable = Post.find(params[:post_id])
+      @reportable = Post.find_by!(slug: params[:post_id])
     elsif params[:comment_id]
       @reportable = Comment.find(params[:comment_id])
     else

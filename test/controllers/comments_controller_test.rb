@@ -22,7 +22,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     sign_in_with_wallet(member, private_key)
 
     assert_difference "post_record.comments.count", 1 do
-      post comments_path, params: { post_id: post_record.id, body: "Great post!" }
+      post comments_path, params: { post_id: post_record.slug, body: "Great post!" }
     end
 
     assert_response :created
@@ -54,7 +54,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     post_record = thread.posts.create!(body: "First!", author_member: member)
     sign_in_with_wallet(member, private_key)
 
-    post comments_path, params: { post_id: post_record.id, body: "" }
+    post comments_path, params: { post_id: post_record.slug, body: "" }
 
     assert_response :unprocessable_entity
   end

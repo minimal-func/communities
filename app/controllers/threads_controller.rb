@@ -31,7 +31,7 @@ class ThreadsController < ApplicationController
   end
 
   def create
-    @thread = current_member.community_threads.create!(thread_params.merge(community_id: params[:community_id]))
+    @thread = current_member.community_threads.create!(thread_params.merge(community_id: @community.id))
 
     respond_to do |format|
       format.html { redirect_to thread_path(@thread), notice: "Thread created." }
@@ -77,11 +77,11 @@ class ThreadsController < ApplicationController
   private
 
   def set_community
-    @community = Community.find(params[:community_id])
+    @community = Community.find_by!(slug: params[:community_id])
   end
 
   def set_thread
-    @thread = CommunityThread.find(params[:id])
+    @thread = CommunityThread.find_by!(slug: params[:id])
   end
 
   def thread_params
@@ -91,6 +91,7 @@ class ThreadsController < ApplicationController
   def thread_json(thread)
     {
       id: thread.id,
+      slug: thread.slug,
       community_id: thread.community_id,
       author_member_id: thread.author_member_id,
       title: thread.title,

@@ -1,11 +1,16 @@
 class Post < ApplicationRecord
+  include Sluggable
+
   belongs_to :community_thread
   belongs_to :author_member, class_name: "Member"
   has_many :comments, dependent: :destroy
   has_many :reports, as: :reportable, dependent: :destroy
 
+  slug_scope :community_thread_id
+
   validates :body, presence: true
   validates :visibility, presence: true, inclusion: { in: %w[community members public] }
+  validates :slug, presence: true, uniqueness: { scope: :community_thread_id }
 
   scope :visible_to_member, ->(member, community = nil) do
     if member
@@ -25,5 +30,11 @@ class Post < ApplicationRecord
       "All members" => "members",
       "Public" => "public"
     }
+  end
+
+  private
+
+  def base_slug
+    SecureRandom.hex(6)
   end
 end

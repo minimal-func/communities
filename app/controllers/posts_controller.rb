@@ -32,7 +32,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_member.posts.create!(post_params.merge(community_thread_id: params[:thread_id]))
+    @post = current_member.posts.create!(post_params.merge(community_thread_id: @thread.id))
 
     respond_to do |format|
       format.html { redirect_to thread_path(@post.community_thread), notice: "Post created." }
@@ -78,11 +78,11 @@ class PostsController < ApplicationController
   private
 
   def set_thread
-    @thread = CommunityThread.find(params[:thread_id])
+    @thread = CommunityThread.find_by!(slug: params[:thread_id])
   end
 
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by!(slug: params[:id])
   end
 
   def require_post_author_or_admin
@@ -101,6 +101,7 @@ class PostsController < ApplicationController
   def post_json(post)
     {
       id: post.id,
+      slug: post.slug,
       community_thread_id: post.community_thread_id,
       author_member_id: post.author_member_id,
       body: post.body,

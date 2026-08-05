@@ -83,7 +83,7 @@ class CommunitiesController < ApplicationController
   private
 
   def set_community
-    @community = Community.find(params[:id])
+    @community = Community.find_by!(slug: params[:id])
   end
 
   def require_community_admin

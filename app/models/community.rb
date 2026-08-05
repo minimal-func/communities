@@ -14,6 +14,10 @@ class Community < ApplicationRecord
     community_members.active.exists?(member: member, role: "admin")
   end
 
+  def to_param
+    slug
+  end
+
   def member?(member)
     community_members.active.exists?(member: member)
   end
