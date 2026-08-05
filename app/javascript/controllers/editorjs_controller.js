@@ -42,21 +42,23 @@ export default class extends Controller {
   initialData() {
     if (this.inputTarget.value && this.inputTarget.value !== "null") {
       try {
-        return JSON.parse(this.inputTarget.value)
+        const parsed = JSON.parse(this.inputTarget.value)
+        return this.normalizeData(parsed)
       } catch (error) {
         console.error("Invalid body_json, starting with a fresh editor.", error)
       }
     }
     if (this.legacyValue.trim()) {
       const converted = htmlToEditorjs(this.legacyValue)
-      if (converted.blocks.length) return converted
+      if (converted.blocks.length) return this.normalizeData(converted)
     }
-    return { time: Date.now(), blocks: [] }
+    return this.normalizeData({ time: Date.now(), blocks: [] })
   }
 
   async sync() {
     const data = await this.editor.save()
-    this.inputTarget.value = this.isEmptyData(data) ? "" : JSON.stringify(data)
+    const normalizedData = this.normalizeData(data)
+    this.inputTarget.value = this.isEmptyData(normalizedData) ? "" : JSON.stringify(normalizedData)
     this.inputTarget.dispatchEvent(new Event("change", { bubbles: true }))
   }
 
@@ -65,6 +67,47 @@ export default class extends Controller {
     if (!blocks.length) return true
     if (blocks.length === 1 && blocks[0].type === "paragraph" && !(blocks[0].data?.text || "").trim()) return true
     return false
+  }
+
+  normalizeData(data) {
+    if (typeof data === "string") {
+      return this.normalizeData({ time: Date.now(), blocks: [{ type: "paragraph", data: { text: data } }] })
+    }
+
+    if (!data || typeof data !== "object") {
+      return { time: Date.now(), blocks: [] }
+    }
+
+    const blocks = Array.isArray(data.blocks) ? data.blocks : []
+    const normalizedBlocks = blocks.reduce((result, block) => {
+      if (!block || typeof block !== "object") return result
+
+      if (block.type === "paragraph") {
+        const paragraphData = block.data
+        if (typeof paragraphData === "string") {
+          result.push({ ...block, data: { text: paragraphData } })
+          return result
+        }
+
+        if (paragraphData && typeof paragraphData === "object") {
+          const text = paragraphData.text == null ? "" : String(paragraphData.text)
+          result.push({ ...block, data: { ...paragraphData, text } })
+          return result
+        }
+
+        result.push({ ...block, data: { text: "" } })
+        return result
+      }
+
+      result.push(block)
+      return result
+    }, [])
+
+    return {
+      ...data,
+      time: typeof data.time === "number" ? data.time : Date.now(),
+      blocks: normalizedBlocks,
+    }
   }
 
   buildTools() {
