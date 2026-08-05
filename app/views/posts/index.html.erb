@@ -14,7 +14,9 @@
   <section aria-labelledby="posts-title">
     <div class="section-heading">
       <h1 id="posts-title">Posts</h1>
-      <%= link_to "New Post", new_thread_post_path(@thread), class: "button" %>
+      <% if current_member %>
+        <%= link_to "New Post", new_thread_post_path(@thread), class: "button" %>
+      <% end %>
     </div>
 
     <% if @posts.any? %>

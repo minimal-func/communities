@@ -7,6 +7,46 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_path
   end
 
+  test "shows a public post to any visitor" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "Public post", author_member: member, visibility: "public")
+
+    get post_path(post_record)
+
+    assert_response :success
+    assert_includes response.body, "Public post"
+  end
+
+  test "does not show a non-public post to a visitor" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "Private post", author_member: member, visibility: "community")
+
+    get post_path(post_record)
+
+    assert_redirected_to thread_path(thread)
+  end
+
+  test "index shows only public posts to a visitor" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    thread.posts.create!(body: "Public post", author_member: member, visibility: "public")
+    thread.posts.create!(body: "Private post", author_member: member, visibility: "community")
+
+    get thread_posts_path(thread)
+
+    assert_response :success
+    assert_includes response.body, "Public post"
+    refute_includes response.body, "Private post"
+  end
+
   test "member can create a post in a thread" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))

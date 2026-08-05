@@ -1,11 +1,12 @@
 class PostsController < ApplicationController
-  before_action :require_member
+  before_action :require_member, except: %i[index show]
   before_action :set_thread, only: %i[index new create]
   before_action :set_post, only: %i[show edit update destroy]
+  before_action :require_visible_post, only: %i[show]
   before_action :require_post_author_or_admin, only: %i[edit update destroy]
 
   def index
-    @posts = @thread.posts.order(created_at: :asc)
+    @posts = @thread.posts.visible_to_member(current_member, @thread.community).order(created_at: :asc)
 
     respond_to do |format|
       format.html
@@ -83,6 +84,15 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find_by!(slug: params[:id])
+  end
+
+  def require_visible_post
+    return if Post.visible_to_member(current_member, @post.community_thread.community).exists?(id: @post.id)
+
+    respond_to do |format|
+      format.html { redirect_to thread_path(@post.community_thread), alert: "You don't have permission to view this post." }
+      format.json { render json: { error: "Not Found" }, status: :not_found }
+    end
   end
 
   def require_post_author_or_admin
