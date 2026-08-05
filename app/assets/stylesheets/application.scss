@@ -1304,8 +1304,18 @@ input[type="reset"]:focus-visible,
 }
 
 table { border-color: var(--border); border-radius: 12px; background: rgba(3, 7, 20, 0.3); }
-th, td { border-bottom-color: rgba(114, 208, 255, 0.1); padding: 0.9rem 1rem; }
-th { color: var(--accent-yellow); background: rgba(69, 217, 255, 0.06); font-size: 0.7rem; }
+th, td { border-bottom-color: rgba(114, 208, 255, 0.08); padding: 0.9rem 1rem; }
+thead th {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgba(69, 217, 255, 0.16), rgba(69, 217, 255, 0.05));
+  border-bottom: 1px solid rgba(69, 217, 255, 0.3);
+}
+th { padding: 0.85rem 1rem; }
 tr:hover td { background: rgba(69, 217, 255, 0.055); }
 .banned-row td { color: var(--text-muted); opacity: 0.6; text-decoration: line-through; }
 
