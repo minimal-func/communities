@@ -12,7 +12,7 @@ class CommentsController < ApplicationController
   end
 
   def create
-    comment = current_member.comments.new(comment_params.except(:post_id).merge(post: @post))
+    comment = current_member.comments.new(comment_params.to_h.except(:post_id, "post_id").merge(post: @post))
 
     if comment.save
       respond_to do |format|
@@ -55,7 +55,25 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    (params[:comment] || params).permit(:post_id, :body, :body_json)
+    raw_params = (params[:comment] || params)
+    permitted_params = raw_params.except(:body_json).permit(:post_id, :body).to_h
+
+    if raw_params.key?(:body_json)
+      permitted_params[:body_json] = normalize_parameter_value(raw_params[:body_json])
+    end
+
+    permitted_params
+  end
+
+  def normalize_parameter_value(value)
+    case value
+    when ActionController::Parameters
+      value.to_unsafe_h.transform_values { |nested| normalize_parameter_value(nested) }.deep_stringify_keys
+    when Hash
+      value.transform_values { |nested| normalize_parameter_value(nested) }.deep_stringify_keys
+    else
+      value
+    end
   end
 
   def comment_json(comment)

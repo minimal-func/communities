@@ -32,7 +32,7 @@ class PostsController < ApplicationController
   end
 
   def create
-    @post = current_member.posts.create!(post_params.merge(community_thread_id: @thread.id))
+    @post = current_member.posts.create!(post_params.to_h.merge(community_thread_id: @thread.id))
 
     respond_to do |format|
       format.html { redirect_to thread_path(@post.community_thread), notice: "Post created." }
@@ -95,7 +95,25 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    (params[:post] || params).permit(:community_thread_id, :body, :body_json, :visibility)
+    raw_params = (params[:post] || params)
+    permitted_params = raw_params.except(:body_json).permit(:community_thread_id, :body, :visibility).to_h
+
+    if raw_params.key?(:body_json)
+      permitted_params[:body_json] = normalize_parameter_value(raw_params[:body_json])
+    end
+
+    permitted_params
+  end
+
+  def normalize_parameter_value(value)
+    case value
+    when ActionController::Parameters
+      value.to_unsafe_h.transform_values { |nested| normalize_parameter_value(nested) }.deep_stringify_keys
+    when Hash
+      value.transform_values { |nested| normalize_parameter_value(nested) }.deep_stringify_keys
+    else
+      value
+    end
   end
 
   def post_json(post)

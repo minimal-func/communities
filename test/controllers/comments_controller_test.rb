@@ -59,6 +59,21 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
   end
 
+  test "creates comment with editorjs content and no plain body" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    thread = community.community_threads.create!(title: "Hello", author_member: member)
+    post_record = thread.posts.create!(body: "First!", author_member: member)
+    sign_in_with_wallet(member, private_key)
+
+    post comments_path, params: { post_id: post_record.slug, body_json: { time: 1, blocks: [{ type: "paragraph", data: { text: "Hello" } }] } }, as: :json
+
+    assert_response :created
+    assert_nil response.parsed_body.fetch("body")
+    assert_equal({ "time" => 1, "blocks" => [{ "type" => "paragraph", "data" => { "text" => "Hello" } }] }, response.parsed_body.fetch("body_json"))
+  end
+
   test "shows a comment" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
