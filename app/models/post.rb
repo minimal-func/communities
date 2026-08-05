@@ -8,7 +8,8 @@ class Post < ApplicationRecord
 
   slug_scope :community_thread_id
 
-  validates :body, presence: true
+  validates :body, presence: true, unless: -> { body_json.present? }
+  validates :body_json, presence: true, unless: -> { body.present? }
   validates :visibility, presence: true, inclusion: { in: %w[community members public] }
   validates :slug, presence: true, uniqueness: { scope: :community_thread_id }
 

@@ -21,7 +21,7 @@
     </div>
 
     <article class="panel">
-      <div class="post-body-rendered"><%= render_post_body(@post.body) %></div>
+      <div class="post-body-rendered"><%= render_rich_content(@post.body_json, @post.body) %></div>
     </article>
 
     <div class="actions-row mt-2">

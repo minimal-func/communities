@@ -95,7 +95,7 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    (params[:post] || params).permit(:community_thread_id, :body, :visibility)
+    (params[:post] || params).permit(:community_thread_id, :body, :body_json, :visibility)
   end
 
   def post_json(post)
@@ -105,6 +105,7 @@ class PostsController < ApplicationController
       community_thread_id: post.community_thread_id,
       author_member_id: post.author_member_id,
       body: post.body,
+      body_json: post.body_json,
       visibility: post.visibility,
       created_at: post.created_at,
       updated_at: post.updated_at

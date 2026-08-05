@@ -9,5 +9,5 @@
       <%= link_to "Report", new_comment_report_path(comment), class: "button button-danger button-small" %>
     <% end %>
   </p>
-  <div class="post-body-rendered"><%= render_post_body(comment.body) %></div>
+  <div class="post-body-rendered"><%= render_rich_content(comment.body_json, comment.body) %></div>
 </article>

@@ -1323,24 +1323,6 @@ tr:hover td { background: rgba(69, 217, 255, 0.055); }
 
 .post-card { border-color: var(--border); }
 
-/* Editor controls remain tools, not primary actions. */
-.editor-toolbar { border-color: rgba(114, 208, 255, 0.22); border-radius: 10px 10px 0 0; background: rgba(3, 7, 20, 0.55); }
-.editor-toolbar button,
-.emoji-picker-btn {
-  width: 30px;
-  min-height: 30px;
-  height: 30px;
-  border: 0;
-  border-radius: 7px;
-  padding: 0;
-  color: var(--text-muted);
-  background: transparent;
-  box-shadow: none;
-}
-.editor-toolbar button:hover, .emoji-picker-btn:hover { color: var(--accent); background: rgba(69, 217, 255, 0.12); box-shadow: none; }
-.editor-toolbar button.is-active { color: var(--accent); border: 0; background: rgba(69, 217, 255, 0.18); }
-.editor-toolbar .toolbar-separator { background: rgba(114, 208, 255, 0.2); }
-
 @media (max-width: 640px) {
   main, .container { width: min(100% - 1.25rem, 74rem); padding: 1.5rem 0; }
   .site-nav { width: min(100% - 1.25rem, 74rem); }

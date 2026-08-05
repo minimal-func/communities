@@ -91,7 +91,7 @@ class CommunitiesController < ApplicationController
   end
 
   def community_params
-    (params[:community] || params).permit(:name, :slug, :description)
+    (params[:community] || params).permit(:name, :slug, :description, :description_json)
   end
 
   def community_json(community)
@@ -101,6 +101,7 @@ class CommunitiesController < ApplicationController
       name: community.name,
       slug: community.slug,
       description: community.description,
+      description_json: community.description_json,
       created_at: community.created_at,
       updated_at: community.updated_at
     }

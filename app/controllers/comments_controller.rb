@@ -55,7 +55,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    (params[:comment] || params).permit(:post_id, :body)
+    (params[:comment] || params).permit(:post_id, :body, :body_json)
   end
 
   def comment_json(comment)
@@ -64,6 +64,7 @@ class CommentsController < ApplicationController
       post_id: comment.post_id,
       author_member_id: comment.author_member_id,
       body: comment.body,
+      body_json: comment.body_json,
       created_at: comment.created_at,
       updated_at: comment.updated_at
     }

@@ -50,7 +50,7 @@
             <% end %>
             <%= link_to "Report", new_post_report_path(post), class: "button button-danger button-small" %>
           </p>
-          <div class="post-body-rendered"><%= render_post_body(post.body) %></div>
+          <div class="post-body-rendered"><%= render_rich_content(post.body_json, post.body) %></div>
         </article>
       <% end %>
     <% else %>
