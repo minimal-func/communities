@@ -85,7 +85,7 @@ class ThreadsController < ApplicationController
   end
 
   def thread_params
-    (params[:community_thread] || params).permit(:community_id, :title, :body)
+    (params[:community_thread] || params).permit(:community_id, :title, :body, :body_json)
   end
 
   def thread_json(thread)
@@ -96,6 +96,7 @@ class ThreadsController < ApplicationController
       author_member_id: thread.author_member_id,
       title: thread.title,
       body: thread.body,
+      body_json: thread.body_json,
       created_at: thread.created_at,
       updated_at: thread.updated_at
     }

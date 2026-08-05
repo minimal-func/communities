@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_05_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_05_220000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,6 +94,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_05_210000) do
   create_table "community_threads", force: :cascade do |t|
     t.integer "author_member_id", null: false
     t.text "body"
+    t.jsonb "body_json"
     t.integer "community_id", null: false
     t.datetime "created_at", null: false
     t.string "slug", null: false
