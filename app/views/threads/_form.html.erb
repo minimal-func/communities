@@ -23,7 +23,9 @@
   >
     <%= form.label :body_json, "Body", class: "field-label" %>
     <div data-editorjs-target="holder" class="editorjs-holder"></div>
-    <%= form.hidden_field :body_json, data: { editorjs_target: "input" } %>
+    <%= form.hidden_field :body_json,
+          value: thread.body_json.is_a?(String) ? thread.body_json : thread.body_json&.to_json,
+          data: { editorjs_target: "input" } %>
   </div>
 
   <div class="actions-row">
