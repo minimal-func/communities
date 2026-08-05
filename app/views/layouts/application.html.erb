@@ -33,11 +33,13 @@
         <div class="site-nav-right">
           <% if current_member %>
             <%= link_to "Dashboard", dashboard_path, class: "site-nav-link" %>
+            <%= link_to "Help", help_path, class: "site-nav-link" %>
             <span class="site-nav-address"><%= current_member.wallet_address %></span>
   
             <%= button_to "Sign out", session_path, method: :delete, class: "site-nav-button" %>
           <% else %>
             <%= link_to "Sign in", login_path, class: "site-nav-link" %>
+            <%= link_to "Help", help_path, class: "site-nav-link" %>
           <% end %>
         </div>
       </nav>

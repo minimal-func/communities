@@ -678,6 +678,32 @@ pre {
 .mb-1 { margin-bottom: 0.5rem; }
 .mb-2 { margin-bottom: 1rem;  }
 
+/* ─── help page ─────────────────────────────────────────── */
+
+.help-toc {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  background: var(--bg-card);
+}
+
+.help-toc ol {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.help-toc a { color: var(--text); }
+
+.help-toc a:hover { color: var(--accent); }
+
+.help-toc ol a {
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 212, 255, 0.3);
+  text-underline-offset: 0.2rem;
+}
+
 /* ─── mobile ────────────────────────────────────────────── */
 
 @media (max-width: 640px) {

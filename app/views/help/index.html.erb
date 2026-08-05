@@ -1,0 +1,198 @@
+<% content_for :title, "Help & getting started" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", root_path %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Help</span>
+  </div>
+
+  <section aria-labelledby="help-title">
+    <div class="section-heading">
+      <div>
+        <p class="login-kicker text-muted">New here? Start with this page.</p>
+        <h1 id="help-title">Help &amp; getting started</h1>
+      </div>
+    </div>
+
+    <p class="meta-line">
+      Communities is a private, invitation-only home for people who want to live lightly on the planet.
+      Here’s every feature and how to use it.
+    </p>
+
+    <nav class="help-toc mt-2" aria-label="Page contents">
+      <ol>
+        <li><a href="#sign-in">Sign in with your wallet</a></li>
+        <li><a href="#dashboard">Your dashboard</a></li>
+        <li><a href="#communities">Communities</a></li>
+        <li><a href="#threads">Threads</a></li>
+        <li><a href="#posts">Posts</a></li>
+        <li><a href="#comments">Comments</a></li>
+        <li><a href="#editor">The rich text editor</a></li>
+        <li><a href="#visibility">Visibility &amp; access</a></li>
+        <li><a href="#members">Membership &amp; roles</a></li>
+        <li><a href="#moderation">Reports &amp; moderation</a></li>
+      </ol>
+    </nav>
+  </section>
+
+  <section id="sign-in" class="mt-2" aria-labelledby="sign-in-title">
+    <h2 id="sign-in-title">1. Sign in with your wallet</h2>
+    <p>There are no usernames or passwords. Your identity is your Ethereum wallet, so your memberships travel with you across devices.</p>
+    <article class="panel mt-1">
+      <h3>Getting in</h3>
+      <ol>
+        <li>Get invited by someone already in a community — membership is invitation-only.</li>
+        <li>Open <a href="<%= login_path %>">Sign in</a> and pick a provider: <strong>Browser Wallet</strong> (MetaMask and friends), <strong>WalletConnect</strong>, or <strong>Ledger</strong>.</li>
+        <li>Confirm the signature in your wallet. Your address is used only to recognise you.</li>
+      </ol>
+    </article>
+  </section>
+
+  <section id="dashboard" class="mt-2" aria-labelledby="dashboard-title">
+    <h2 id="dashboard-title">2. Your dashboard</h2>
+    <p>After signing in you land on your workspace. It gives you a quick look at your whole life on Communities:</p>
+    <article class="panel mt-1">
+      <ul>
+        <li><strong>At a glance</strong> — counts of your communities, threads, posts, and comments.</li>
+        <li><strong>My Communities</strong> — every group you belong to, your role in each, and when it was created.</li>
+        <li><strong>Recent Activity</strong> — your latest threads, posts, and comments with direct links back to them.</li>
+      </ul>
+      <p class="text-sm text-muted">Use the <strong>New Community</strong> button to start your own group.</p>
+    </article>
+  </section>
+
+  <section id="communities" class="mt-2" aria-labelledby="communities-title">
+    <h2 id="communities-title">3. Communities</h2>
+    <p>A community is a quiet, private space with its own members and topics. Anyone can create one.</p>
+    <article class="panel mt-1">
+      <h3>Creating a community</h3>
+      <ul>
+        <li>From the dashboard, press <strong>New Community</strong>.</li>
+        <li>Give it a name, an address (slug), a description, and pick who can see it (see <a href="#visibility">Visibility</a>).</li>
+        <li>You become the community <strong>admin</strong> automatically.</li>
+      </ul>
+    </article>
+    <article class="panel mt-1">
+      <h3>Joining a community</h3>
+      <ul>
+        <li><strong>Open</strong> communities: press <strong>Join</strong> and you’re in immediately.</li>
+        <li><strong>Closed</strong> communities: press <strong>Request to join</strong> and an admin approves you.</li>
+        <li><strong>Secret</strong> communities: only visible to members — you must be added by an admin or invited by wallet.</li>
+      </ul>
+    </article>
+    <article class="panel mt-1">
+      <h3>Managing a community</h3>
+      <p class="text-sm">Admins can edit the community, delete it, open the <strong>Members</strong> page, and add or remove members by wallet address.</p>
+    </article>
+  </section>
+
+  <section id="threads" class="mt-2" aria-labelledby="threads-title">
+    <h2 id="threads-title">4. Threads</h2>
+    <p>Threads are the topics inside a community — like noticeboard posts with a title and a body. Each thread collects related posts underneath it.</p>
+    <article class="panel mt-1">
+      <h3>Starting a thread</h3>
+      <ol>
+        <li>Open a community and press <strong>New Thread</strong>.</li>
+        <li>Write a title and use the rich text editor for the body (see <a href="#editor">The rich text editor</a>).</li>
+        <li>Press <strong>Create Thread</strong>. You can edit or delete your own thread any time.</li>
+      </ol>
+    </article>
+  </section>
+
+  <section id="posts" class="mt-2" aria-labelledby="posts-title">
+    <h2 id="posts-title">5. Posts</h2>
+    <p>Posts are replies within a thread. Use them to share guides, project updates, answers, and questions.</p>
+    <article class="panel mt-1">
+      <h3>Writing a post</h3>
+      <ul>
+        <li>Open a thread and press <strong>New Post</strong>.</li>
+        <li>Choose who can read it: <strong>Community members</strong> (only this community), <strong>All members</strong> (every signed-in member), or <strong>Public</strong> (visible to guests too).</li>
+        <li>Edit or delete your own post from the thread or the post page.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section id="comments" class="mt-2" aria-labelledby="comments-title">
+    <h2 id="comments-title">6. Comments</h2>
+    <p>Comments are short replies under a single post — the lightest way to ask a question, offer a fix, or pass on a tip. Signed-in members can comment on any post they can view.</p>
+  </section>
+
+  <section id="editor" class="mt-2" aria-labelledby="editor-title">
+    <h2 id="editor-title">7. The rich text editor</h2>
+    <p>Threads, posts, comments, and community descriptions use a rich editor. You can add:</p>
+    <article class="panel mt-1">
+      <ul>
+        <li><strong>Headings</strong> and paragraphs</li>
+        <li><strong>Lists</strong>, checklists, and tables</li>
+        <li><strong>Quotes</strong> and code blocks</li>
+        <li><strong>Images</strong> — uploaded and stored with your post</li>
+        <li><strong>Embeds</strong> — paste a YouTube link to embed a video, or share a link card to any site</li>
+        <li><strong>Warnings</strong> and dividers to structure longer posts</li>
+      </ul>
+      <p class="text-sm text-muted">On plain pages you can also type Markdown-style text; simple paragraphs are rendered automatically.</p>
+    </article>
+  </section>
+
+  <section id="visibility" class="mt-2" aria-labelledby="visibility-title">
+    <h2 id="visibility-title">8. Visibility &amp; access</h2>
+    <p>Both communities and posts have access levels, so you control exactly who sees your work.</p>
+    <article class="panel mt-1">
+      <h3>Community visibility</h3>
+      <ul>
+        <li><strong>Open</strong> — anyone signed in can see it and join.</li>
+        <li><strong>Closed</strong> — anyone signed in can see it, but joining needs an admin’s approval.</li>
+        <li><strong>Secret</strong> — only members can see it at all.</li>
+      </ul>
+    </article>
+    <article class="panel mt-1">
+      <h3>Post visibility</h3>
+      <ul>
+        <li><strong>Community members</strong> — visible only inside this community.</li>
+        <li><strong>All members</strong> — visible to every signed-in member.</li>
+        <li><strong>Public</strong> — visible to everyone, even people who aren’t signed in.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section id="members" class="mt-2" aria-labelledby="members-title">
+    <h2 id="members-title">9. Membership &amp; roles</h2>
+    <article class="panel mt-1">
+      <h3>Roles</h3>
+      <ul>
+        <li><strong>Member</strong> — can read, write threads, posts, and comments.</li>
+        <li><strong>Admin</strong> — can also manage the community, its members, and pending join requests.</li>
+      </ul>
+    </article>
+    <article class="panel mt-1">
+      <h3>Managing members</h3>
+      <p>On the <strong>Members</strong> page (admin only) you can:</p>
+      <ul>
+        <li><strong>Add Member</strong> — add someone by wallet address and choose their role.</li>
+        <li><strong>Join Requests</strong> — approve or reject people who asked to join a closed community.</li>
+        <li><strong>Ban / Unban</strong> — block a member from a community, or lift the block.</li>
+        <li><strong>Remove</strong> — take a member out of the community entirely.</li>
+        <li><strong>Pending Invitations</strong> — see people invited by wallet who haven’t signed in yet.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section id="moderation" class="mt-2" aria-labelledby="moderation-title">
+    <h2 id="moderation-title">10. Reports &amp; moderation</h2>
+    <article class="panel mt-1">
+      <h3>Reporting content</h3>
+      <p>Any signed-in member can report a post or a comment with a short reason. Press the <strong>Report</strong> button next to any post or comment to flag it.</p>
+    </article>
+    <article class="panel mt-1">
+      <h3>Resolving reports</h3>
+      <p>Platform admins review reports on the <strong>Reports</strong> page and mark each one <strong>Resolved</strong> or <strong>Dismissed</strong>.</p>
+    </article>
+  </section>
+
+  <section class="mt-2" aria-labelledby="support-title">
+    <div class="section-heading">
+      <h2 id="support-title">Still stuck?</h2>
+      <p class="text-sm text-muted">This project has no ads and is run by real people. If something’s broken or unclear, your community admin can help — or reach out through the support link on the landing page.</p>
+    </div>
+  </section>
+</main>
