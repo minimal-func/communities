@@ -18,9 +18,9 @@
       </p>
     </div>
 
-    <% if @thread.body.present? %>
+    <% if @thread.body.present? || @thread.body_json.present? %>
       <article class="panel">
-        <p class="body-text"><%= @thread.body %></p>
+        <div class="post-body-rendered"><%= render_rich_content(@thread.body_json, @thread.body) %></div>
       </article>
     <% end %>
 

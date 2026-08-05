@@ -15,9 +15,15 @@
     <%= form.text_field :title, required: true %>
   </div>
 
-  <div class="field">
-    <%= form.label :body %>
-    <%= form.text_area :body, rows: 8 %>
+  <div
+    data-controller="editorjs"
+    data-editorjs-placeholder-value="Start typing..."
+    data-editorjs-legacy-value="<%= sanitize(thread.body, tags: ApplicationHelper::ALLOWED_TAGS, attributes: ApplicationHelper::ALLOWED_ATTRS) if thread.body.present? %>"
+    class="editor-shell"
+  >
+    <%= form.label :body_json, "Body", class: "field-label" %>
+    <div data-editorjs-target="holder" class="editorjs-holder"></div>
+    <%= form.hidden_field :body_json, data: { editorjs_target: "input" } %>
   </div>
 
   <div class="actions-row">

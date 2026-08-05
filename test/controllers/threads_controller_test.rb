@@ -48,6 +48,24 @@ class ThreadsControllerTest < ActionDispatch::IntegrationTest
     assert_equal community.id, response.parsed_body.fetch("community_id")
   end
 
+  test "creates a thread with editorjs body_json" do
+    private_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(private_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
+    sign_in_with_wallet(member, private_key)
+
+    post community_threads_path(community), params: {
+      title: "Introductions",
+      body_json: { blocks: [{ type: "paragraph", data: { text: "Welcome!" } }] }.to_json
+    }
+
+    assert_response :redirect
+    thread = CommunityThread.last
+    parsed_body_json = thread.body_json.is_a?(String) ? JSON.parse(thread.body_json) : thread.body_json
+    assert_equal "Welcome!", parsed_body_json.dig("blocks", 0, "data", "text")
+  end
+
   test "validates thread title presence" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
