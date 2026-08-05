@@ -1,7 +1,7 @@
 require "test_helper"
 
 class LandingControllerTest < ActionDispatch::IntegrationTest
-  test "signed-in members are redirected to their communities" do
+  test "signed-in members are redirected to their dashboard" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
 
@@ -15,6 +15,6 @@ class LandingControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
 
-    assert_redirected_to communities_path
+    assert_redirected_to dashboard_path
   end
 end

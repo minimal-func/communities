@@ -28,10 +28,11 @@
     <header class="site-header">
       <nav class="site-nav">
         <div class="site-nav-left">
-          <%= link_to "Communities", current_member ? communities_path : root_path, class: "site-nav-brand" %>
+          <%= link_to "Communities", current_member ? dashboard_path : root_path, class: "site-nav-brand" %>
         </div>
         <div class="site-nav-right">
           <% if current_member %>
+            <%= link_to "Dashboard", dashboard_path, class: "site-nav-link" %>
             <span class="site-nav-address"><%= current_member.wallet_address %></span>
   
             <%= button_to "Sign out", session_path, method: :delete, class: "site-nav-button" %>

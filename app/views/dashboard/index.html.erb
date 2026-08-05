@@ -1,0 +1,116 @@
+<% content_for :title, "Dashboard" %>
+
+<main class="container">
+  <section aria-labelledby="dashboard-title">
+    <div class="section-heading">
+      <div>
+        <p class="login-kicker">Workspace</p>
+        <h1 id="dashboard-title">Your Dashboard</h1>
+      </div>
+      <%= link_to "New Community", new_community_path, class: "button" %>
+    </div>
+
+    <p class="meta-line">
+      Signed in as <%= current_member.wallet_address %>
+      <% if current_member.last_signed_in_at %>
+        &middot; last signed in <%= time_tag current_member.last_signed_in_at, current_member.last_signed_in_at.to_fs(:short) %>
+      <% end %>
+    </p>
+  </section>
+
+  <section class="mt-2" aria-labelledby="stats-title">
+    <h2 id="stats-title">At a glance</h2>
+    <dl class="stat-grid">
+      <div class="stat-card">
+        <dt>Communities</dt>
+        <dd><%= @communities.size %></dd>
+      </div>
+      <div class="stat-card">
+        <dt>Threads</dt>
+        <dd><%= current_member.community_threads.count %></dd>
+      </div>
+      <div class="stat-card">
+        <dt>Posts</dt>
+        <dd><%= current_member.posts.count %></dd>
+      </div>
+      <div class="stat-card">
+        <dt>Comments</dt>
+        <dd><%= current_member.comments.count %></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="mt-2" aria-labelledby="my-communities-title">
+    <h2 id="my-communities-title">My Communities</h2>
+
+    <% if @communities.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @communities.each do |community| %>
+            <% membership = community.community_members.active.find_by(member: current_member) %>
+            <tr>
+              <td><%= link_to community.name, community %></td>
+              <td><%= membership&.role %></td>
+              <td><%= time_tag community.created_at, community.created_at.to_fs(:short) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="empty-state">You’re not a member of any community yet. Create one to get started.</p>
+    <% end %>
+  </section>
+
+  <section class="mt-2" aria-labelledby="recent-title">
+    <h2 id="recent-title">Recent Activity</h2>
+
+    <% if @threads.any? || @posts.any? || @comments.any? %>
+      <div class="activity-grid">
+        <% if @threads.any? %>
+          <div class="activity-list">
+            <h3>Threads</h3>
+            <% @threads.each do |thread| %>
+              <p class="activity-item">
+                <%= link_to thread.title, thread_path(thread) %>
+                <span class="text-muted text-sm"><%= time_tag thread.created_at, thread.created_at.to_fs(:short) %></span>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if @posts.any? %>
+          <div class="activity-list">
+            <h3>Posts</h3>
+            <% @posts.each do |post| %>
+              <p class="activity-item">
+                <%= link_to post.community_thread.title, post_path(post) %>
+                <span class="text-muted text-sm"><%= time_tag post.created_at, post.created_at.to_fs(:short) %></span>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if @comments.any? %>
+          <div class="activity-list">
+            <h3>Comments</h3>
+            <% @comments.each do |comment| %>
+              <p class="activity-item">
+                <%= link_to comment.post.community_thread.title, post_path(comment.post) %>
+                <span class="text-muted text-sm"><%= time_tag comment.created_at, comment.created_at.to_fs(:short) %></span>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="empty-state">Nothing here yet. Write a thread or post to start contributing.</p>
+    <% end %>
+  </section>
+</main>

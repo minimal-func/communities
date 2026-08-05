@@ -80,7 +80,7 @@ export default class extends Controller {
       })
 
       this.setStatus("Signed in.")
-      window.location.reload()
+      window.location.assign("/dashboard")
     } catch (error) {
       this.setStatus(error.message || "Sign in failed.", "error")
     } finally {

@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   get "login" => "sessions#new", as: :login
+  get "dashboard" => "dashboard#index", as: :dashboard
 
   resource :session, only: %i[create destroy] do
     post :nonce
