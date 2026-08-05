@@ -2,6 +2,8 @@ class CommentsController < ApplicationController
   before_action :require_member
   before_action :set_comment, only: %i[show update destroy]
   before_action :set_post, only: %i[create]
+  before_action :require_content_community, only: %i[show]
+  before_action :require_membership_community, only: %i[create]
 
   def index
     render json: Comment.order(created_at: :desc).map { |comment| comment_json(comment) }
@@ -52,6 +54,14 @@ class CommentsController < ApplicationController
 
   def set_post
     @post = Post.find_by!(slug: comment_params[:post_id])
+  end
+
+  def require_content_community
+    require_community_content!(@comment.post.community_thread.community)
+  end
+
+  def require_membership_community
+    require_community_member!(@post.community_thread.community)
   end
 
   def comment_params

@@ -73,8 +73,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_000000) do
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
+    t.string "visibility", default: "closed", null: false
     t.index ["created_by_member_id"], name: "index_communities_on_created_by_member_id"
     t.index ["slug"], name: "index_communities_on_slug", unique: true
+    t.index ["visibility"], name: "index_communities_on_visibility"
   end
 
   create_table "community_members", force: :cascade do |t|
@@ -83,6 +85,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_000000) do
     t.integer "community_id", null: false
     t.datetime "created_at", null: false
     t.integer "member_id", null: false
+    t.datetime "requested_at"
     t.string "role", default: "member", null: false
     t.datetime "updated_at", null: false
     t.index ["banned_at"], name: "index_community_members_on_banned_at"

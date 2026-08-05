@@ -1,4 +1,6 @@
 class Community < ApplicationRecord
+  VISIBILITIES = %w[open closed secret].freeze
+
   belongs_to :created_by_member, class_name: "Member"
   has_many :community_threads, dependent: :destroy
   has_many :community_members, dependent: :destroy
@@ -9,6 +11,26 @@ class Community < ApplicationRecord
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true
+  validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
+
+  scope :visible_to_member, ->(member) do
+    if member&.admin?
+      all
+    else
+      where(
+        "visibility <> 'secret' OR id IN (SELECT community_id FROM community_members WHERE member_id = :member_id AND banned_at IS NULL AND requested_at IS NULL)",
+        member_id: member&.id
+      )
+    end
+  end
+
+  def self.visibility_options
+    {
+      "Open - anyone signed in can join" => "open",
+      "Closed - members request to join, admins approve" => "closed",
+      "Secret - only visible to members" => "secret"
+    }
+  end
 
   def admin?(member)
     community_members.active.exists?(member: member, role: "admin")
@@ -24,6 +46,34 @@ class Community < ApplicationRecord
 
   def banned_member?(member)
     community_members.banned.exists?(member: member)
+  end
+
+  def pending_member?(member)
+    community_members.pending.exists?(member: member)
+  end
+
+  def open?
+    visibility == "open"
+  end
+
+  def closed?
+    visibility == "closed"
+  end
+
+  def secret?
+    visibility == "secret"
+  end
+
+  def visible_to?(member)
+    return true if member&.admin?
+    return true unless secret?
+    member?(member)
+  end
+
+  def content_visible_to?(member)
+    return true if member&.admin?
+    return true if open?
+    member?(member)
   end
 
   private

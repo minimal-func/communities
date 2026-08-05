@@ -10,7 +10,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   test "shows a public post to any visitor" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
-    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member, visibility: "open")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "Public post", author_member: member, visibility: "public")
 
@@ -23,7 +23,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   test "does not show a non-public post to a visitor" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
-    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member, visibility: "open")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "Private post", author_member: member, visibility: "community")
 
@@ -35,7 +35,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   test "index shows only public posts to a visitor" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
-    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member, visibility: "open")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     thread.posts.create!(body: "Public post", author_member: member, visibility: "public")
     thread.posts.create!(body: "Private post", author_member: member, visibility: "community")
@@ -51,6 +51,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 
@@ -67,6 +68,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 
@@ -81,6 +83,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 
@@ -93,6 +96,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 

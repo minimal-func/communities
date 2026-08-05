@@ -20,6 +20,11 @@
     <%= form.text_field :slug %>
   </div>
 
+  <div class="field">
+    <%= form.label :visibility %>
+    <%= form.select :visibility, Community.visibility_options, {}, class: "input" %>
+  </div>
+
   <div
     data-controller="editorjs"
     data-editorjs-placeholder-value="Describe your community..."

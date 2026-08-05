@@ -10,11 +10,13 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   resources :communities do
+    post :join, on: :member
     resources :threads, controller: :threads, shallow: true
     resources :members, controller: :community_members, only: %i[index create destroy] do
       member do
         post :ban
         post :unban
+        post :approve
       end
     end
   end

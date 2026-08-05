@@ -16,8 +16,10 @@
           <tr>
             <th>Name</th>
             <th>Slug</th>
+            <th>Visibility</th>
             <th>Created by</th>
             <th>Created</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -25,8 +27,18 @@
             <tr>
               <td><%= link_to community.name, community %></td>
               <td><%= community.slug %></td>
+              <td><%= community.visibility.capitalize %></td>
               <td><%= community.created_by_member.wallet_address %></td>
               <td><%= time_tag community.created_at, community.created_at.to_fs(:short) %></td>
+              <td>
+                <% if community.member?(current_member) %>
+                  <%= link_to "View", community, class: "button button-small" %>
+                <% elsif community.pending_member?(current_member) %>
+                  <span class="text-muted text-sm">Pending</span>
+                <% else %>
+                  <%= button_to(community.open? ? "Join" : "Request to join", join_community_path(community), method: :post, class: "button button-small") %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </tbody>

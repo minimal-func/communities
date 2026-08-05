@@ -2,6 +2,8 @@ class ThreadsController < ApplicationController
   before_action :require_member, except: %i[show]
   before_action :set_community, only: %i[index new create]
   before_action :set_thread, only: %i[show edit update destroy]
+  before_action :require_content_community, only: %i[index show edit update destroy]
+  before_action :require_membership_community, only: %i[new create]
 
   def index
     @threads = @community.community_threads.order(created_at: :desc)
@@ -82,6 +84,14 @@ class ThreadsController < ApplicationController
 
   def set_thread
     @thread = CommunityThread.find_by!(slug: params[:id])
+  end
+
+  def require_content_community
+    require_community_content!(@community || @thread.community)
+  end
+
+  def require_membership_community
+    require_community_member!(@community)
   end
 
   def thread_params

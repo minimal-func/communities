@@ -42,11 +42,30 @@ class ApplicationController < ActionController::Base
   end
 
   def require_community_member!(community)
-    return if community.member?(current_member)
+    return if current_member&.admin? || community.member?(current_member)
 
     respond_to do |format|
       format.html { redirect_to community, alert: "You are not a member of this community." }
       format.json { render json: { error: "Forbidden" }, status: :forbidden }
+    end
+  end
+
+  def require_community_visibility!(community)
+    return if community.visible_to?(current_member)
+
+    render_not_found
+  end
+
+  def require_community_content!(community)
+    return if community.content_visible_to?(current_member)
+
+    render_not_found
+  end
+
+  def render_not_found
+    respond_to do |format|
+      format.html { render plain: "Not Found", status: :not_found }
+      format.json { render json: { error: "Not Found" }, status: :not_found }
     end
   end
 end

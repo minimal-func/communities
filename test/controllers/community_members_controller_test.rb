@@ -348,6 +348,107 @@ class CommunityMembersControllerTest < ActionDispatch::IntegrationTest
     assert_select ".alert", /Member is banned/
   end
 
+  test "approves a pending membership request" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin, visibility: "closed")
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    pending = community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post approve_community_member_path(community, pending)
+
+    assert_redirected_to community_members_path(community)
+    assert_equal "Membership request approved.", flash[:notice]
+    assert_not pending.reload.pending?
+    assert community.member?(member)
+  end
+
+  test "approves a pending membership request via JSON" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin, visibility: "closed")
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    pending = community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    post approve_community_member_path(community, pending), as: :json
+
+    assert_response :success
+    assert_nil response.parsed_body["requested_at"]
+    assert community.member?(member)
+  end
+
+  test "does not allow non-admin to approve a request" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    pending = community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    sign_in_with_wallet(member, member_key)
+
+    post approve_community_member_path(community, pending)
+
+    assert_redirected_to community_path(community)
+    assert pending.reload.pending?
+  end
+
+  test "admin can reject a pending request by removing it" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+
+    member_key = ethereum_private_key
+    member = Member.create!(wallet_address: ethereum_address(member_key))
+    pending = community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    assert_difference "community.community_members.count", -1 do
+      delete community_member_path(community, pending)
+    end
+
+    assert_redirected_to community_members_path(community)
+    assert_not community.member?(member)
+  end
+
+  test "index lists active and banned members and separates join requests" do
+    admin_key = ethereum_private_key
+    admin = Member.create!(wallet_address: ethereum_address(admin_key))
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin, visibility: "closed")
+    community.community_members.create!(member: admin, role: "admin")
+
+    banned_key = ethereum_private_key
+    banned = Member.create!(wallet_address: ethereum_address(banned_key))
+    banned_member = community.community_members.create!(member: banned, role: "member", banned_at: Time.current)
+
+    pending_key = ethereum_private_key
+    pending = Member.create!(wallet_address: ethereum_address(pending_key))
+    community.community_members.create!(member: pending, role: "member", requested_at: Time.current)
+
+    sign_in_with_wallet(admin, admin_key)
+
+    get community_members_path(community)
+
+    assert_response :success
+    assert_includes response.body, "Join Requests"
+    assert_includes response.body, banned.wallet_address
+    assert_select "form[action='#{unban_community_member_path(community, banned_member)}']", count: 1
+  end
+
   private
 
   def sign_in_with_wallet(member, private_key)

@@ -27,6 +27,39 @@ class CommunityMemberTest < ActiveSupport::TestCase
     assert_equal [member.id], CommunityMember.active.pluck(:member_id)
   end
 
+  test "active scope excludes banned and pending members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    pending = Member.create!(wallet_address: "0x3333333333333333333333333333333333333333")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin", banned_at: Time.current)
+    community.community_members.create!(member: member, role: "member")
+    community.community_members.create!(member: pending, role: "member", requested_at: Time.current)
+
+    assert_equal [member.id], CommunityMember.active.pluck(:member_id)
+  end
+
+  test "pending scope includes only pending members" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+    community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    assert_equal [member.id], CommunityMember.pending.pluck(:member_id)
+  end
+
+  test "pending? returns true only for pending requests" do
+    admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    community = Community.create!(name: "Test", slug: "test", created_by_member: admin)
+    community.community_members.create!(member: admin, role: "admin")
+    pending_member = community.community_members.create!(member: member, role: "member", requested_at: Time.current)
+
+    assert pending_member.pending?
+    assert_not community.community_members.find_by(member: admin).pending?
+  end
+
   test "banned scope includes only banned members" do
     admin = Member.create!(wallet_address: "0x1111111111111111111111111111111111111111")
     member = Member.create!(wallet_address: "0x2222222222222222222222222222222222222222")

@@ -31,6 +31,33 @@
       <% end %>
     </div>
 
+    <% if @pending_requests.any? %>
+      <div class="panel mb-2">
+        <h2>Join Requests</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Wallet</th>
+              <th>Requested</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @pending_requests.each do |cm| %>
+              <tr>
+                <td><%= cm.member.wallet_address %></td>
+                <td><%= time_tag cm.created_at, cm.created_at.to_fs(:short) %></td>
+                <td>
+                  <%= button_to "Approve", approve_community_member_path(@community, cm), method: :post, class: "button button-small" %>
+                  <%= button_to "Remove", community_member_path(@community, cm), method: :delete, data: { turbo_confirm: "Reject this request?" }, class: "button button-danger button-small" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+
     <% if @members.any? %>
       <table>
         <thead>

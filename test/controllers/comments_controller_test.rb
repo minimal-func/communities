@@ -17,12 +17,13 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "First!", author_member: member)
     sign_in_with_wallet(member, private_key)
 
     assert_difference "post_record.comments.count", 1 do
-      post comments_path, params: { post_id: post_record.slug, body: "Great post!" }
+      post comments_path, params: { post_id: post_record.slug, body: "Great post!" }, as: :json
     end
 
     assert_response :created
@@ -50,11 +51,12 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "First!", author_member: member)
     sign_in_with_wallet(member, private_key)
 
-    post comments_path, params: { post_id: post_record.slug, body: "" }
+    post comments_path, params: { post_id: post_record.slug, body: "" }, as: :json
 
     assert_response :unprocessable_entity
   end
@@ -63,6 +65,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "First!", author_member: member)
     sign_in_with_wallet(member, private_key)
@@ -78,6 +81,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     post_record = thread.posts.create!(body: "First!", author_member: member)
     comment = post_record.comments.create!(body: "Nice!", author_member: member)
@@ -114,7 +118,7 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     sign_in_with_wallet(member, private_key)
 
     assert_difference "Comment.count", -1 do
-      delete comment_path(comment)
+      delete comment_path(comment), as: :json
     end
 
     assert_response :no_content

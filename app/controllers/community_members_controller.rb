@@ -4,7 +4,8 @@ class CommunityMembersController < ApplicationController
   before_action :require_community_admin
 
   def index
-    @members = @community.community_members.includes(:member).order(created_at: :desc)
+    @members = @community.community_members.not_pending.includes(:member).order(created_at: :desc)
+    @pending_requests = @community.community_members.pending.includes(:member).order(created_at: :desc)
     @community_member = @community.community_members.build
     @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
 
@@ -21,21 +22,11 @@ class CommunityMembersController < ApplicationController
 
     if member
       if @community.banned_member?(member)
-        flash.now[:alert] = "Member is banned from this community."
-        @members = @community.community_members.includes(:member).order(created_at: :desc)
-        @community_member = @community.community_members.build
-        @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
-        render :index, status: :unprocessable_entity
-        return
+        return render_index_with(alert: "Member is banned from this community.", status: :unprocessable_entity)
       end
 
       if @community.member?(member)
-        flash.now[:alert] = "Member is already part of this community."
-        @members = @community.community_members.includes(:member).order(created_at: :desc)
-        @community_member = @community.community_members.build
-        @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
-        render :index, status: :unprocessable_entity
-        return
+        return render_index_with(alert: "Member is already part of this community.", status: :unprocessable_entity)
       end
 
       @community.community_members.create!(member: member, role: role)
@@ -57,11 +48,17 @@ class CommunityMembersController < ApplicationController
       end
     end
   rescue ActiveRecord::RecordInvalid => error
-    flash.now[:alert] = error.record.errors.full_messages.to_sentence
-    @members = @community.community_members.includes(:member).order(created_at: :desc)
-    @community_member = @community.community_members.build
-    @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
-    render :index, status: :unprocessable_entity
+    render_index_with(alert: error.record.errors.full_messages.to_sentence, status: :unprocessable_entity)
+  end
+
+  def approve
+    @community_member = @community.community_members.pending.find(params[:id])
+    @community_member.update!(requested_at: nil)
+
+    respond_to do |format|
+      format.html { redirect_to community_members_path(@community), notice: "Membership request approved." }
+      format.json { render json: community_member_json(@community_member) }
+    end
   end
 
   def destroy
@@ -116,6 +113,15 @@ class CommunityMembersController < ApplicationController
     require_community_admin!(@community)
   end
 
+  def render_index_with(alert:, status:)
+    flash.now[:alert] = alert
+    @members = @community.community_members.not_pending.includes(:member).order(created_at: :desc)
+    @pending_requests = @community.community_members.pending.includes(:member).order(created_at: :desc)
+    @community_member = @community.community_members.build
+    @pending_invitations = @community.wallet_invitations.pending.order(created_at: :desc)
+    render :index, status: status
+  end
+
   def invitation_json(invitation)
     {
       id: invitation.id,
@@ -135,6 +141,7 @@ class CommunityMembersController < ApplicationController
       wallet_address: cm.member.wallet_address,
       role: cm.role,
       banned_at: cm.banned_at,
+      requested_at: cm.requested_at,
       created_at: cm.created_at
     }
   end

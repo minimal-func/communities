@@ -10,7 +10,7 @@ class ThreadsControllerTest < ActionDispatch::IntegrationTest
   test "shows thread to any visitor" do
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
-    community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community = Community.create!(name: "Test", slug: "test", created_by_member: member, visibility: "open")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
 
     get thread_path(thread)
@@ -70,6 +70,7 @@ class ThreadsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member, body_json: { blocks: [{ type: "paragraph", data: { text: "Welcome!" } }] })
     sign_in_with_wallet(member, private_key)
 
@@ -97,6 +98,7 @@ class ThreadsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 
@@ -110,6 +112,7 @@ class ThreadsControllerTest < ActionDispatch::IntegrationTest
     private_key = ethereum_private_key
     member = Member.create!(wallet_address: ethereum_address(private_key))
     community = Community.create!(name: "Test", slug: "test", created_by_member: member)
+    community.community_members.create!(member: member, role: "admin")
     thread = community.community_threads.create!(title: "Hello", author_member: member)
     sign_in_with_wallet(member, private_key)
 

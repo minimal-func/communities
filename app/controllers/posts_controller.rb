@@ -3,6 +3,8 @@ class PostsController < ApplicationController
   before_action :set_thread, only: %i[index new create]
   before_action :set_post, only: %i[show edit update destroy]
   before_action :require_visible_post, only: %i[show]
+  before_action :require_content_community, only: %i[index show]
+  before_action :require_membership_community, only: %i[new create]
   before_action :require_post_author_or_admin, only: %i[edit update destroy]
 
   def index
@@ -84,6 +86,14 @@ class PostsController < ApplicationController
 
   def set_post
     @post = Post.find_by!(slug: params[:id])
+  end
+
+  def require_content_community
+    require_community_content!(@thread&.community || @post.community_thread.community)
+  end
+
+  def require_membership_community
+    require_community_member!(@thread.community)
   end
 
   def require_visible_post
