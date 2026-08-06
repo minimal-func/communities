@@ -46,7 +46,21 @@ class SessionsController < ApplicationController
     head :no_content
   end
 
+  # Development-only shortcut to sign in without a wallet, for previews and
+  # screenshots. Never reachable outside of the development environment.
+  def demo
+    return head(:forbidden) unless Rails.env.development?
+
+    member = Member.find_by(wallet_address: demo_params[:wallet]) || Member.first
+    session[:member_id] = member&.id
+    redirect_to dashboard_path
+  end
+
   private
+
+  def demo_params
+    params.permit(:wallet)
+  end
 
   def session_params
     params.permit(:wallet_address, :nonce, :signature)

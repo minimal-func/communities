@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resource :session, only: %i[create destroy] do
     post :nonce
+    get :demo, on: :collection if Rails.env.development?
   end
 
   ActiveAdmin.routes(self)

@@ -1031,6 +1031,39 @@ pre {
 .landing-feature-grid h3 { margin: 0 0 0.7rem; font-size: 1rem; text-transform: none; }
 .landing-feature-grid p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
 
+.landing-screens { display: grid; gap: 2rem; border: 0; padding: 0; background: transparent; box-shadow: none; }
+
+.landing-screen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  align-items: start;
+}
+
+.screen-card {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.7rem clamp(1.1rem, 2vw, 1.5rem);
+  background: rgba(10, 15, 31, 0.72);
+  box-shadow: none;
+}
+
+.screen-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 5px);
+  background: var(--bg);
+}
+
+.screen-card figcaption { padding: 0 0.4rem; }
+.screen-card h3 { margin: 0 0 0.5rem; font-size: 1rem; text-transform: none; }
+.screen-card p { margin: 0; font-size: 0.9rem; line-height: 1.65; }
+
 .landing-membership { display: grid; gap: 2rem; border: 0; padding: 0; background: transparent; box-shadow: none; }
 
 .landing-membership-grid {
@@ -1139,6 +1172,7 @@ a.donate-card:hover { color: inherit; }
   .landing-principles h2 { margin-top: 1.3rem; }
   .landing-how { grid-template-columns: 1fr; gap: 2rem; }
   .landing-feature-grid { grid-template-columns: 1fr; }
+  .landing-screen-grid { grid-template-columns: 1fr; }
   .landing-membership-grid { grid-template-columns: 1fr; gap: 2rem; }
   .landing-donate-grid { grid-template-columns: 1fr; }
 }
