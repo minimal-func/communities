@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   get "dashboard" => "dashboard#index", as: :dashboard
   get "help" => "help#index", as: :help
 
+  get "waitlist" => "waitlist#index", as: :waitlist
+  post "waitlist" => "waitlist#create"
+  get "waitlist/status" => "waitlist#status", as: :waitlist_status
+
   resource :session, only: %i[create destroy] do
     post :nonce
     get :demo, on: :collection if Rails.env.development?

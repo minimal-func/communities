@@ -1,0 +1,54 @@
+<% content_for :title, "Invitation status" %>
+
+<main class="container">
+  <div class="breadcrumb">
+    <%= link_to "Communities", root_path %>
+    <span class="breadcrumb-sep">/</span>
+    <span>Invitation status</span>
+  </div>
+
+  <section aria-labelledby="status-title">
+    <div class="section-heading">
+      <p class="login-kicker text-muted">Waitlist</p>
+      <h1 id="status-title">Check your invitation status</h1>
+    </div>
+
+    <p class="meta-line">
+      Enter the wallet address you used to join the waitlist to see whether your invitation has
+      been accepted yet.
+    </p>
+
+    <div class="panel mt-2">
+      <%= form_with url: waitlist_status_path, method: :get, local: true, class: "inline-form" do |form| %>
+        <div class="field">
+          <%= form.label :wallet, "Wallet Address" %>
+          <%= form.text_field :wallet, value: @wallet_address, placeholder: "0x...", required: true %>
+        </div>
+        <div class="actions-row">
+          <%= form.submit "Check status" %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @wallet_address.present? %>
+      <div class="panel mt-2" aria-live="polite">
+        <% if @member %>
+          <h2>Invitation accepted</h2>
+          <p>
+            Your invitation for <code><%= @member.wallet_address %></code> has been accepted —
+            you’re a member. <%= link_to "Sign in", login_path %> to enter the workspace.
+          </p>
+        <% elsif @entry %>
+          <h2><%= entry_status_label(@entry) %></h2>
+          <p><%= entry_status_message(@entry) %></p>
+        <% else %>
+          <h2>Not on the waitlist</h2>
+          <p>
+            <code><%= @wallet_address %></code> isn’t on the waitlist yet.
+            <%= link_to "Join the waitlist", waitlist_path %> to request an invitation.
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+</main>

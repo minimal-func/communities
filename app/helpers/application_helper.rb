@@ -41,6 +41,30 @@ module ApplicationHelper
     false
   end
 
+  def entry_status_label(entry)
+    {
+      "pending" => "Waiting for review",
+      "approved" => "Invitation approved",
+      "rejected" => "Invitation declined",
+      "accepted" => "Invitation accepted"
+    }.fetch(entry.status, "Unknown status")
+  end
+
+  def entry_status_message(entry)
+    case entry.status
+    when "pending"
+      "Your wallet is on the waitlist. An admin will review your invitation shortly."
+    when "approved"
+      "Your invitation was approved! Sign in with this wallet to accept it and join."
+    when "rejected"
+      "Your request was declined. Contact an admin if you think this was a mistake."
+    when "accepted"
+      "Your invitation was accepted and you’re a member."
+    else
+      "Unknown status."
+    end
+  end
+
   private
 
   def render_editorjs_block(block)

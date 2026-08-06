@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_06_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_06_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -159,6 +159,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_010000) do
     t.index ["status"], name: "index_reports_on_status"
   end
 
+  create_table "waitlist_entries", force: :cascade do |t|
+    t.datetime "accepted_at"
+    t.bigint "accepted_member_id"
+    t.datetime "approved_at"
+    t.bigint "approved_by_admin_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "rejected_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.string "wallet_address", null: false
+    t.index ["accepted_member_id"], name: "index_waitlist_entries_on_accepted_member_id"
+    t.index ["approved_by_admin_user_id"], name: "index_waitlist_entries_on_approved_by_admin_user_id"
+    t.index ["status"], name: "index_waitlist_entries_on_status"
+    t.index ["wallet_address"], name: "index_waitlist_entries_on_wallet_address", unique: true
+  end
+
   create_table "wallet_invitations", force: :cascade do |t|
     t.datetime "accepted_at"
     t.integer "accepted_member_id"
@@ -201,6 +217,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_010000) do
   add_foreign_key "posts", "members", column: "author_member_id"
   add_foreign_key "reports", "members", column: "reporter_member_id"
   add_foreign_key "reports", "members", column: "resolved_by_member_id"
+  add_foreign_key "waitlist_entries", "admin_users", column: "approved_by_admin_user_id"
+  add_foreign_key "waitlist_entries", "members", column: "accepted_member_id"
   add_foreign_key "wallet_invitations", "communities"
   add_foreign_key "wallet_invitations", "members", column: "accepted_member_id"
   add_foreign_key "wallet_invitations", "members", column: "invited_by_member_id"

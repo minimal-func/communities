@@ -68,7 +68,8 @@ class SessionsController < ApplicationController
 
   def wallet_can_authenticate?(wallet_address)
     Member.exists?(wallet_address: wallet_address) ||
-      WalletInvitation.pending.exists?(wallet_address: wallet_address)
+      WalletInvitation.pending.exists?(wallet_address: wallet_address) ||
+      WaitlistEntry.approved.exists?(wallet_address: wallet_address)
   end
 
   def find_or_register_member(wallet_address)
@@ -76,9 +77,17 @@ class SessionsController < ApplicationController
   end
 
   def register_invited_member(wallet_address)
-    invitation = WalletInvitation.pending.find_by!(wallet_address: wallet_address)
-    member = Member.create!(wallet_address: wallet_address, invited_by_member: invitation.invited_by_member)
-    invitation.accept!(member)
+    if invitation = WalletInvitation.pending.find_by(wallet_address: wallet_address)
+      member = Member.create!(wallet_address: wallet_address, invited_by_member: invitation.invited_by_member)
+      invitation.accept!(member)
+      return member
+    end
+
+    entry = WaitlistEntry.approved.find_by(wallet_address: wallet_address)
+    raise ActiveRecord::RecordNotFound unless entry
+
+    member = Member.create!(wallet_address: wallet_address)
+    entry.accept!(member)
     member
   end
 

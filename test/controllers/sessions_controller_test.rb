@@ -98,6 +98,40 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "does not issue a challenge for a pending waitlist wallet" do
+    WaitlistEntry.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+
+    post nonce_session_path, params: { wallet_address: "0x2222222222222222222222222222222222222222" }
+
+    assert_response :forbidden
+  end
+
+  test "approved waitlist wallet signs in and becomes a member" do
+    entry_key = ethereum_private_key
+    entry_address = ethereum_address(entry_key)
+    admin = admin_users(:one)
+    entry = WaitlistEntry.create!(wallet_address: entry_address)
+    entry.approve!(admin)
+
+    post nonce_session_path, params: { wallet_address: entry_address }
+    assert_response :success
+
+    challenge = response.parsed_body
+    post session_path, params: {
+      wallet_address: entry_address,
+      nonce: challenge.fetch("nonce"),
+      signature: personal_sign(entry_key, challenge.fetch("message"))
+    }
+
+    assert_response :created
+
+    member = Member.find_by!(wallet_address: entry_address)
+    entry.reload
+    assert_equal member, entry.accepted_member
+    assert_predicate entry, :accepted?
+    assert_not_nil entry.accepted_at
+  end
+
   private
 
   def sign_in_with_wallet(member, private_key)
