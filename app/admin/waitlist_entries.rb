@@ -13,10 +13,19 @@ ActiveAdmin.register WaitlistEntry do
 
   index title: "Waitlist & Invites" do
     id_column
+    column :community_name
+    column :community_description do |entry|
+      if entry.community_description.present?
+        truncate(entry.community_description, length: 60)
+      else
+        "—"
+      end
+    end
     column :wallet_address
+    column("Proposed by wallet") { |entry| entry.accepted? ? "Yes" : "No" }
     column :status
     column("Approved by") { |entry| entry.approved_by_admin_user&.email || "—" }
-    column("Accepted by wallet") { |entry| entry.accepted? ? "Yes" : "No" }
+    column("Community") { |entry| entry.community ? entry.community.name : "—" }
     column :created_at
     actions defaults: false do |entry|
       if entry.pending?
@@ -31,6 +40,8 @@ ActiveAdmin.register WaitlistEntry do
   show do
     attributes_table do
       row :id
+      row :community_name
+      row :community_description
       row :wallet_address
       row :status
       row :approved_by_admin_user
@@ -38,6 +49,7 @@ ActiveAdmin.register WaitlistEntry do
       row :rejected_at
       row :accepted_member
       row :accepted_at
+      row :community
       row :created_at
       row :updated_at
     end

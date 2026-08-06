@@ -40,6 +40,14 @@
           </p>
         <% elsif @entry %>
           <h2><%= entry_status_label(@entry) %></h2>
+          <% if @entry.community_name.present? %>
+            <p>
+              <strong><%= @entry.community_name %></strong>
+            </p>
+            <% if @entry.community_description.present? %>
+              <p class="text-muted text-sm"><%= simple_format(@entry.community_description) %></p>
+            <% end %>
+          <% end %>
           <p><%= entry_status_message(@entry) %></p>
         <% else %>
           <h2>Not on the waitlist</h2>

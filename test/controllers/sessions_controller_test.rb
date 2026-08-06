@@ -99,7 +99,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "does not issue a challenge for a pending waitlist wallet" do
-    WaitlistEntry.create!(wallet_address: "0x2222222222222222222222222222222222222222")
+    WaitlistEntry.create!(
+      wallet_address: "0x2222222222222222222222222222222222222222",
+      community_name: "Greenhaven Commons"
+    )
 
     post nonce_session_path, params: { wallet_address: "0x2222222222222222222222222222222222222222" }
 
@@ -110,7 +113,11 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     entry_key = ethereum_private_key
     entry_address = ethereum_address(entry_key)
     admin = admin_users(:one)
-    entry = WaitlistEntry.create!(wallet_address: entry_address)
+    entry = WaitlistEntry.create!(
+      wallet_address: entry_address,
+      community_name: "Greenhaven Commons",
+      community_description: "A solarpunk neighborhood."
+    )
     entry.approve!(admin)
 
     post nonce_session_path, params: { wallet_address: entry_address }
@@ -130,6 +137,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal member, entry.accepted_member
     assert_predicate entry, :accepted?
     assert_not_nil entry.accepted_at
+    assert_equal "Greenhaven Commons", entry.community.name
+    assert_equal "admin", entry.community.community_members.find_by(member: member).role
   end
 
   private

@@ -3,10 +3,12 @@ class WaitlistEntry < ApplicationRecord
 
   belongs_to :approved_by_admin_user, class_name: "AdminUser", optional: true
   belongs_to :accepted_member, class_name: "Member", optional: true
+  belongs_to :community, optional: true
 
   before_validation :normalize_wallet_address
 
   validates :wallet_address, presence: true, uniqueness: true
+  validates :community_name, presence: true
   validates :status, inclusion: { in: STATUSES }
   validate :wallet_address_must_be_ethereum_address
   validate :wallet_address_must_not_belong_to_existing_member, on: :create
@@ -15,6 +17,18 @@ class WaitlistEntry < ApplicationRecord
   scope :approved, -> { where(status: "approved") }
   scope :rejected, -> { where(status: "rejected") }
   scope :accepted, -> { where(status: "accepted") }
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[
+      id wallet_address status community_name community_description
+      approved_at rejected_at accepted_at approved_by_admin_user_id
+      accepted_member_id community_id created_at updated_at
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[approved_by_admin_user accepted_member community]
+  end
 
   def pending?
     status == "pending"
@@ -51,10 +65,39 @@ class WaitlistEntry < ApplicationRecord
   end
 
   def accept!(member)
-    update!(status: "accepted", accepted_member: member, accepted_at: Time.current)
+    ApplicationRecord.transaction do
+      update!(status: "accepted", accepted_member: member, accepted_at: Time.current)
+      provision_community!(member)
+    end
   end
 
   private
+
+  # Founds the proposed community and makes the accepting member its first admin.
+  def provision_community!(member)
+    return unless community_name.present?
+    return if community.present?
+
+    community = Community.create!(
+      name: community_name,
+      slug: build_unique_slug(community_name),
+      description: community_description,
+      created_by_member: member
+    )
+    member.community_members.create!(community: community, role: "admin")
+    update!(community_id: community.id)
+  end
+
+  def build_unique_slug(name)
+    base = name.to_s.parameterize.presence || "community"
+    slug = base
+    suffix = 2
+    while Community.exists?(slug: slug)
+      slug = "#{base}-#{suffix}"
+      suffix += 1
+    end
+    slug
+  end
 
   def normalize_wallet_address
     self.wallet_address = EthereumWallet.normalize(wallet_address)

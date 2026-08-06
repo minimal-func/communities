@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_06_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_06_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -164,6 +164,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_150000) do
     t.bigint "accepted_member_id"
     t.datetime "approved_at"
     t.bigint "approved_by_admin_user_id"
+    t.text "community_description"
+    t.bigint "community_id"
+    t.string "community_name"
     t.datetime "created_at", null: false
     t.datetime "rejected_at"
     t.string "status", default: "pending", null: false
@@ -171,6 +174,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_150000) do
     t.string "wallet_address", null: false
     t.index ["accepted_member_id"], name: "index_waitlist_entries_on_accepted_member_id"
     t.index ["approved_by_admin_user_id"], name: "index_waitlist_entries_on_approved_by_admin_user_id"
+    t.index ["community_id"], name: "index_waitlist_entries_on_community_id"
     t.index ["status"], name: "index_waitlist_entries_on_status"
     t.index ["wallet_address"], name: "index_waitlist_entries_on_wallet_address", unique: true
   end
@@ -218,6 +222,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_06_150000) do
   add_foreign_key "reports", "members", column: "reporter_member_id"
   add_foreign_key "reports", "members", column: "resolved_by_member_id"
   add_foreign_key "waitlist_entries", "admin_users", column: "approved_by_admin_user_id"
+  add_foreign_key "waitlist_entries", "communities"
   add_foreign_key "waitlist_entries", "members", column: "accepted_member_id"
   add_foreign_key "wallet_invitations", "communities"
   add_foreign_key "wallet_invitations", "members", column: "accepted_member_id"

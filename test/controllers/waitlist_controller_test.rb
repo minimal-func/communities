@@ -12,11 +12,20 @@ class WaitlistControllerTest < ActionDispatch::IntegrationTest
     wallet_address = "0x1111111111111111111111111111111111111111"
 
     assert_difference "WaitlistEntry.count", 1 do
-      post waitlist_path, params: { waitlist_entry: { wallet_address: wallet_address } }
+      post waitlist_path, params: {
+        waitlist_entry: {
+          wallet_address: wallet_address,
+          community_name: "Greenhaven Commons",
+          community_description: "A solarpunk neighborhood."
+        }
+      }
     end
 
+    entry = WaitlistEntry.find_by!(wallet_address: wallet_address)
     assert_redirected_to waitlist_status_path(wallet: wallet_address)
-    assert_predicate WaitlistEntry.find_by!(wallet_address: wallet_address), :pending?
+    assert_predicate entry, :pending?
+    assert_equal "Greenhaven Commons", entry.community_name
+    assert_equal "A solarpunk neighborhood.", entry.community_description
   end
 
   test "rejects joining with an invalid wallet address" do
@@ -38,12 +47,16 @@ class WaitlistControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "status page shows pending status for a waitlisted wallet" do
-    entry = WaitlistEntry.create!(wallet_address: "0x1111111111111111111111111111111111111111")
+    entry = WaitlistEntry.create!(
+      wallet_address: "0x1111111111111111111111111111111111111111",
+      community_name: "Greenhaven Commons"
+    )
 
     get waitlist_status_path(wallet: entry.wallet_address)
 
     assert_response :success
     assert_match "Waiting for review", response.body
+    assert_match "Greenhaven Commons", response.body
   end
 
   test "status page shows accepted for a member wallet" do

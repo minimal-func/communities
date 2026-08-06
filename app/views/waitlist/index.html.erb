@@ -14,8 +14,9 @@
     </div>
 
     <p class="meta-line">
-      Membership is by invitation. Add your wallet to the waitlist and an admin will review
-      your request. You can check the status of your invitation anytime on the
+      Membership is by invitation. Tell us the wallet that owns your place and the community
+      you’d like to found. An admin will review your proposal. You can check the status of
+      your invitation anytime on the
       <%= link_to "status page", waitlist_status_path %>.
     </p>
 
@@ -23,7 +24,7 @@
       <h2>Request an invitation</h2>
       <% if @entry.errors.any? %>
         <div id="error_explanation">
-          <p><%= pluralize(@entry.errors.count, "error") %> prevented this wallet from being added:</p>
+          <p><%= pluralize(@entry.errors.count, "error") %> prevented this request from being saved:</p>
           <ul>
             <% @entry.errors.full_messages.each do |message| %>
               <li><%= message %></li>
@@ -36,8 +37,16 @@
           <%= form.label :wallet_address, "Wallet Address" %>
           <%= form.text_field :wallet_address, placeholder: "0x...", required: true %>
         </div>
+        <div class="field">
+          <%= form.label :community_name, "Community name" %>
+          <%= form.text_field :community_name, placeholder: "e.g. Greenhaven Commons", required: true %>
+        </div>
+        <div class="field">
+          <%= form.label :community_description, "What is your community about?" %>
+          <%= form.text_area :community_description, placeholder: "A short description the admin will review before inviting you.", rows: 3 %>
+        </div>
         <div class="actions-row">
-          <%= form.submit "Join the waitlist" %>
+          <%= form.submit "Request invitation" %>
         </div>
       <% end %>
     </div>

@@ -25,6 +25,6 @@ class WaitlistController < ApplicationController
   private
 
   def waitlist_entry_params
-    params.require(:waitlist_entry).permit(:wallet_address)
+    params.require(:waitlist_entry).permit(:wallet_address, :community_name, :community_description)
   end
 end
