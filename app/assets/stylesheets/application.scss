@@ -110,6 +110,14 @@ label {
   flex: 0 0 auto;
 }
 
+.waitlist-form {
+  display: grid;
+  gap: 1rem;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+
 input, textarea, select {
   width: 100%;
   border: 1px solid rgba(0, 212, 255, 0.3);

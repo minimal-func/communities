@@ -32,7 +32,7 @@
           </ul>
         </div>
       <% end %>
-      <%= form_with model: @entry, url: waitlist_path, local: true, class: "inline-form" do |form| %>
+      <%= form_with model: @entry, url: waitlist_path, local: true, class: "waitlist-form" do |form| %>
         <div class="field">
           <%= form.label :wallet_address, "Wallet Address" %>
           <%= form.text_field :wallet_address, placeholder: "0x...", required: true %>
