@@ -10,6 +10,14 @@ class CommunityThread < ApplicationRecord
   validates :title, presence: true
   validates :slug, presence: true, uniqueness: { scope: :community_id }
 
+  def self.ransackable_associations(auth_object = nil)
+    ["author_member", "community", "posts"]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["author_member_id", "body", "community_id", "created_at", "id", "slug", "title", "updated_at"]
+  end
+
   private
 
   def base_slug

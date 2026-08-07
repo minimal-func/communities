@@ -13,6 +13,14 @@ class Community < ApplicationRecord
   validates :slug, presence: true, uniqueness: true
   validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "created_by_member_id", "description", "id", "name", "slug", "updated_at", "visibility"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["community_members", "community_threads", "created_by_member", "members", "wallet_invitations"]
+  end
+
   scope :visible_to_member, ->(member) do
     if member&.admin?
       all
